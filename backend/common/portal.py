@@ -77,18 +77,78 @@ def _unique_source_code(name: str, requested_code: str = "") -> str:
     return candidate
 
 
+def _screening_site_findings(screening: ScreeningRequest | None) -> list[dict]:
+    if screening is None:
+        return []
+
+    findings: dict[str, dict] = {}
+    metadata_checks = (screening.metadata or {}).get("external_site_checks") or []
+    for check in metadata_checks:
+        key = check.get("url") or check.get("source_code") or check.get("source_name")
+        if not key:
+            continue
+        findings[key] = {
+            "source_name": check.get("source_name") or check.get("source_code") or "External source",
+            "source_code": check.get("source_code") or "EXTERNAL",
+            "url": check.get("url") or "",
+            "title": check.get("title") or "",
+            "snippet": check.get("snippet") or "",
+            "count": 0,
+            "max_score": int(check.get("score") or 0),
+            "status": check.get("status") or ("FOUND" if check.get("matched") else "NO_MATCH"),
+            "matched": bool(check.get("matched")),
+        }
+
+    for match in screening.matches.all():
+        details = match.details or {}
+        entry = getattr(match, "watchlist_entry", None)
+        source = getattr(entry, "source", None) if entry else None
+        source_name = getattr(source, "name", "") or match.source_code or "EXTERNAL"
+        source_code = getattr(source, "code", "") or match.source_code or "EXTERNAL"
+        url = details.get("url") or getattr(entry, "source_url", "") or getattr(source, "landing_url", "")
+        title = details.get("title") or match.matched_name or source_name
+        snippet = details.get("snippet") or match.remarks or getattr(entry, "remarks", "")
+        key = url or source_code or title
+        if key not in findings:
+            findings[key] = {
+                "source_name": source_name,
+                "source_code": source_code,
+                "url": url,
+                "title": title,
+                "snippet": snippet,
+                "count": 0,
+                "max_score": 0,
+                "status": "FOUND",
+                "matched": True,
+            }
+        findings[key]["count"] += 1
+        findings[key]["max_score"] = max(findings[key]["max_score"], match.score or 0)
+        findings[key]["matched"] = True
+        findings[key]["status"] = "FOUND"
+        if not findings[key]["snippet"] and snippet:
+            findings[key]["snippet"] = snippet
+
+    return sorted(findings.values(), key=lambda item: (item["matched"], item["max_score"], item["count"], item["source_name"]), reverse=True)
+
+
 def portal_home(request: HttpRequest) -> HttpResponse:
     User = get_user_model()
     locale = _resolve_locale(request)
     selected_screening = None
-    screening_id = request.GET.get("screening")
+    screening_id = request.GET.get("screening") or request.session.get("portal_selected_screening_id")
     if screening_id:
-        selected_screening = ScreeningRequest.objects.select_related("client").prefetch_related("matches").filter(pk=screening_id).first()
+        selected_screening = (
+            ScreeningRequest.objects.select_related("client")
+            .prefetch_related("matches__watchlist_entry__source")
+            .filter(pk=screening_id)
+            .first()
+        )
 
-    screenings = ScreeningRequest.objects.select_related("client").prefetch_related("matches").all()[:8]
+    screenings = ScreeningRequest.objects.select_related("client").prefetch_related("matches").all()[:60]
     is_portal_admin = _is_portal_admin(request)
-    recent_users = User.objects.all().order_by("-date_joined")[:6] if is_portal_admin else []
-    research_links = SanctionsSource.objects.exclude(landing_url="").order_by("code")[:10] if is_portal_admin else []
+    recent_users = User.objects.all().order_by("-date_joined")[:40] if is_portal_admin else []
+    research_links = SanctionsSource.objects.exclude(landing_url="").order_by("code")[:40] if is_portal_admin else []
+    selected_sites = _screening_site_findings(selected_screening)
     context = {
         "locale": locale,
         "portal_admin": is_portal_admin,
@@ -104,14 +164,16 @@ def portal_home(request: HttpRequest) -> HttpResponse:
             "reports": ScreeningRequest.objects.filter(report__isnull=False).count(),
         },
         "screenings": screenings,
-        "alerts": Alert.objects.all()[:6],
-        "sources": SanctionsSource.objects.all()[:6],
-        "sync_logs": SyncJobLog.objects.select_related("source").all()[:6],
-        "audit_events": AuditEvent.objects.select_related("user").all()[:6],
-        "rules": RiskRule.objects.filter(enabled=True)[:6],
-        "reports": PDFReport.objects.select_related("screening", "screening__client").all()[:6],
+        "alerts": Alert.objects.all()[:20],
+        "sources": SanctionsSource.objects.all()[:40],
+        "sync_logs": SyncJobLog.objects.select_related("source").all()[:40],
+        "audit_events": AuditEvent.objects.select_related("user").all()[:40],
+        "rules": RiskRule.objects.filter(enabled=True)[:40],
+        "reports": PDFReport.objects.select_related("screening", "screening__client").all()[:40],
         "demo_user": _demo_user(),
         "selected_screening": selected_screening,
+        "selected_sites": selected_sites,
+        "selected_sites_found": sum(1 for site in selected_sites if site["matched"]),
         "recent_users": recent_users,
         "research_links": research_links,
         "user_totals": {
@@ -246,7 +308,7 @@ def portal_create_search_link(request: HttpRequest) -> HttpResponse:
         source_format=source_format,
         endpoint=endpoint,
         landing_url=landing_url,
-        enabled=False,
+        enabled=True,
         sync_frequency="manual",
         notes=notes or "Link de pesquisa cadastrado pelo portal principal.",
     )
@@ -298,24 +360,34 @@ def portal_screening(request: HttpRequest) -> HttpResponse:
 
     payload = _portal_screening_payload(request)
     screening = ScreeningService.run_screening(payload, user=actor, request=request)
+    request.session["portal_selected_screening_id"] = screening.pk
     locale = _normalize_locale(request.POST.get("locale")) or _resolve_locale(request)
-    return redirect(f"/?{urlencode({'screening': screening.pk, 'lang': locale})}")
+    return redirect(f"/?{urlencode({'lang': locale})}#new-screening")
 
 
 @csrf_protect
 def portal_report_pdf(request: HttpRequest, screening_id: int) -> HttpResponse:
-    if request.method != "POST":
+    if request.method not in {"GET", "POST"}:
         return redirect(f"/?{urlencode({'screening': screening_id, 'lang': _resolve_locale(request)})}")
 
-    screening = get_object_or_404(ScreeningRequest.objects.select_related("client"), pk=screening_id)
-    language = _normalize_locale(request.POST.get("locale")) or _resolve_locale(request)
+    screening = get_object_or_404(
+        ScreeningRequest.objects.select_related("client").prefetch_related("matches__watchlist_entry__source"),
+        pk=screening_id,
+    )
+    language = _normalize_locale(
+        request.POST.get("locale")
+        or request.POST.get("language")
+        or request.GET.get("lang")
+        or request.GET.get("locale")
+        or request.GET.get("language")
+    ) or _resolve_locale(request)
     report = ReportService.build_pdf(screening, language=language, request=request)
     report.file.open("rb")
     return FileResponse(
         report.file,
         content_type="application/pdf",
         as_attachment=False,
-        filename=f"screening-{screening.pk}.pdf",
+        filename=f"screening-{screening.pk}-{language}.pdf",
     )
 
 
