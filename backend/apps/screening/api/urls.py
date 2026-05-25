@@ -12,4 +12,5 @@ router.register("alerts", AlertViewSet, basename="alerts")
 
 urlpatterns = router.urls + [
     path("dashboard/", DashboardView.as_view(), name="screening-dashboard"),
+    path("external-search/", ExternalSearchView.as_view(), name="external-search"),
 ]

@@ -22,6 +22,11 @@ from apps.screening.models import Alert, Client, PDFReport, ScreeningRequest
 from apps.screening.services.report_service import ReportService
 from apps.screening.services.screening_service import ScreeningService
 from apps.users.permissions import IsAnyRole, IsComplianceTeam
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from rest_framework.response import Response
+from apps.screening.repositories.watchlist_repository import WatchlistRepository
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -126,3 +131,26 @@ class AlertViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Ge
         alert.is_read = True
         alert.save(update_fields=["is_read"])
         return Response(AlertSerializer(alert).data)
+
+
+class ExternalSearchView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        query = request.data.get("query") or ""
+        if not query or not str(query).strip():
+            return Response({"detail": "Provide a query."}, status=status.HTTP_400_BAD_REQUEST)
+        results = WatchlistRepository.external_site_matches(str(query).strip())
+        # group by url or source code
+        groups = []
+        for r in results:
+            key = r.get("url") or (r.get("source").code if r.get("source") else "UNKNOWN")
+            groups.append({
+                "key": key,
+                "url": r.get("url"),
+                "source_code": r.get("source").code if r.get("source") else None,
+                "title": r.get("title"),
+                "snippet": r.get("snippet"),
+                "score": r.get("score"),
+            })
+        return Response({"query": query, "groups": groups})

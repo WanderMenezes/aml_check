@@ -39,3 +39,9 @@
 [25/May/2026 18:46:36] "GET /favicon.ico HTTP/1.1" 404 179
 [25/May/2026 18:46:49] "POST /run-screening/ HTTP/1.1" 302 0
 [25/May/2026 18:46:51] "GET /?screening=24&lang=pt HTTP/1.1" 200 70213
+[25/May/2026 18:53:12] "GET /?screening=24&lang=pt HTTP/1.1" 200 70797
+[25/May/2026 18:53:42] "GET /health/ HTTP/1.1" 200 118
+[25/May/2026 19:00:59] "GET /?screening=24&lang=pt HTTP/1.1" 200 71093
+[25/May/2026 19:01:09] "POST /run-screening/ HTTP/1.1" 302 0
+[25/May/2026 19:01:11] "GET /?screening=32&lang=pt HTTP/1.1" 200 74576
+[25/May/2026 19:01:50] "POST /portal-reports/31/pdf/ HTTP/1.1" 200 3699

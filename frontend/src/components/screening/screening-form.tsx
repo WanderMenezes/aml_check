@@ -2,6 +2,8 @@
 
 import { SearchCheck } from "lucide-react";
 import { useMemo, useState } from "react";
+import { api } from "@/lib/api/client";
+import ExternalResultsModal from "./external-results-modal";
 
 import { useAppShell } from "@/providers/app-shell-provider";
 
@@ -20,6 +22,10 @@ export function ScreeningForm({ onSubmit }: ScreeningFormProps) {
   const [country, setCountry] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [externalLoading, setExternalLoading] = useState(false);
+  const [externalResults, setExternalResults] = useState<any[] | null>(null);
+  const [externalQuery, setExternalQuery] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const isValid = useMemo(() => {
     const hasName = fullName.trim().length > 0;
@@ -79,8 +85,33 @@ export function ScreeningForm({ onSubmit }: ScreeningFormProps) {
           <SearchCheck size={18} />
           {submitting ? t("loading") : t("runScreening")}
         </button>
+        <button
+          type="button"
+          disabled={!isValid || externalLoading}
+          onClick={async () => {
+            const q = fullName.trim() || country.trim();
+            if (!q) return;
+            setExternalLoading(true);
+            setExternalResults(null);
+            setExternalQuery(q);
+            try {
+              const { data } = await api.post("/screening/external-search/", { query: q });
+              setExternalResults(data.groups || []);
+              setModalOpen(true);
+            } catch (err) {
+              setExternalResults([]);
+              setModalOpen(true);
+            } finally {
+              setExternalLoading(false);
+            }
+          }}
+          className="ml-2 inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/3 px-4 py-3 text-sm text-white disabled:opacity-60"
+        >
+          {externalLoading ? t("loading") : "Buscar nas URLs"}
+        </button>
       </div>
       {error ? <p className="lg:col-span-3 text-sm text-rose-300">{error}</p> : null}
+      <ExternalResultsModal open={modalOpen} onClose={() => setModalOpen(false)} results={externalResults || []} query={externalQuery} />
     </form>
   );
 }
