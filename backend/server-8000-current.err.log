@@ -45,3 +45,10 @@
 [25/May/2026 19:01:09] "POST /run-screening/ HTTP/1.1" 302 0
 [25/May/2026 19:01:11] "GET /?screening=32&lang=pt HTTP/1.1" 200 74576
 [25/May/2026 19:01:50] "POST /portal-reports/31/pdf/ HTTP/1.1" 200 3699
+[25/May/2026 19:16:11] "GET /?screening=32&lang=pt HTTP/1.1" 200 74590
+[25/May/2026 19:16:57] "GET /?screening=32&lang=pt HTTP/1.1" 200 74590
+2026-05-25 19:17:00,329 WARNING django.request Not Found: /favicon.ico
+[25/May/2026 19:17:00] "GET /favicon.ico HTTP/1.1" 404 179
+[25/May/2026 19:17:07] "POST /run-screening/ HTTP/1.1" 302 0
+[25/May/2026 19:17:09] "GET /?screening=34&lang=pt HTTP/1.1" 200 74602
+[25/May/2026 19:17:34] "POST /portal-reports/19/pdf/ HTTP/1.1" 200 3396
