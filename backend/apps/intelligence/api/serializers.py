@@ -16,9 +16,9 @@ class SanctionsSourceSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate_code(self, value):
-        # Ensure code is provided
+        # Allow empty here; code may be auto-generated later from name
         if not value:
-            raise serializers.ValidationError("O campo Code é obrigatório.")
+            return value
 
         # When updating, allow the same instance
         instance = getattr(self, "instance", None)
@@ -28,6 +28,35 @@ class SanctionsSourceSerializer(serializers.ModelSerializer):
         if qs.exists():
             raise serializers.ValidationError(f"Sanctions source com este Code já existe. Code: {value}")
         return value
+
+    def _generate_code_from_name(self, name: str) -> str:
+        # Normalize name to an uppercase code: remove non-alnum, replace spaces with underscore
+        import re
+
+        base = (name or "").upper()
+        base = re.sub(r"[^A-Z0-9]+", "_", base).strip("_")
+        if not base:
+            base = "SOURCE"
+        # truncate to 20 chars to match model max_length
+        base = base[:20]
+
+        candidate = base
+        suffix = 1
+        while SanctionsSource.objects.filter(code=candidate).exists():
+            suffix += 1
+            tail = f"_{suffix}"
+            candidate = (base[: max(0, 20 - len(tail))] + tail)
+        return candidate
+
+    def create(self, validated_data):
+        if not validated_data.get("code"):
+            validated_data["code"] = self._generate_code_from_name(validated_data.get("name", ""))
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        if not validated_data.get("code") and not instance.code:
+            validated_data["code"] = self._generate_code_from_name(validated_data.get("name", instance.name))
+        return super().update(instance, validated_data)
 
 
 class WatchlistEntrySerializer(serializers.ModelSerializer):
