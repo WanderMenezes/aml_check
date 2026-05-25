@@ -96,6 +96,33 @@ class DashboardView(APIView):
         recent_window = timezone.now() - timedelta(days=30)
         screenings = ScreeningRequest.objects.all()
         recent_logs = screenings.filter(created_at__gte=recent_window).values("risk_level").annotate(total=Count("id"))
+
+        # timeseries per day for last 30 days
+        days = []
+        for i in range(30):
+            day = timezone.now().date() - timedelta(days=29 - i)
+            count = screenings.filter(created_at__date=day).count()
+            days.append({"date": day.isoformat(), "total": count})
+
+        # top sources (by matches) in recent window
+        top_sources_qs = (
+            ScreeningRequest.objects.filter(created_at__gte=recent_window)
+            .values("matches__source_code")
+            .annotate(total=Count("matches__id"))
+            .order_by("-total")[:5]
+        )
+        top_sources = [{"source_code": item["matches__source_code"], "total": item["total"]} for item in top_sources_qs]
+
+        # average score for matches in recent window
+        from django.db.models import Avg
+
+        avg_score_qs = (
+            ScreeningRequest.objects.filter(created_at__gte=recent_window).values("matches__score").aggregate(avg_score=Avg("matches__score"))
+        )
+        avg_score = avg_score_qs.get("avg_score") or 0
+
+        unread_alerts = Alert.objects.filter(user=request.user, is_read=False).count()
+
         return Response(
             {
                 "totals": {
@@ -104,8 +131,12 @@ class DashboardView(APIView):
                     "pending": screenings.filter(status=ScreeningRequest.Status.PENDING).count(),
                     "review": screenings.filter(status=ScreeningRequest.Status.REVIEW).count(),
                     "high_risk_countries": screenings.filter(matches__source_code="FATF").distinct().count(),
+                    "avg_score": round(avg_score, 1),
+                    "unread_alerts": unread_alerts,
                 },
                 "risk_distribution": list(recent_logs),
+                "timeseries": days,
+                "top_sources": top_sources,
                 "recent_screenings": ScreeningRequestSerializer(screenings[:5], many=True).data,
                 "recent_alerts": AlertSerializer(Alert.objects.filter(user=request.user)[:5], many=True).data,
             }

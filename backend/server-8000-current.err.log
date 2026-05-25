@@ -52,3 +52,5 @@
 [25/May/2026 19:17:07] "POST /run-screening/ HTTP/1.1" 302 0
 [25/May/2026 19:17:09] "GET /?screening=34&lang=pt HTTP/1.1" 200 74602
 [25/May/2026 19:17:34] "POST /portal-reports/19/pdf/ HTTP/1.1" 200 3396
+[25/May/2026 19:19:32] "GET /?screening=34&lang=pt HTTP/1.1" 200 74604
+[25/May/2026 19:23:44] "GET / HTTP/1.1" 200 69351

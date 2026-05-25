@@ -17,8 +17,12 @@ interface DashboardPayload {
     pending: number;
     review: number;
     high_risk_countries: number;
+    avg_score?: number;
+    unread_alerts?: number;
   };
   risk_distribution: { risk_level: string; total: number }[];
+  timeseries?: { date: string; total: number }[];
+  top_sources?: { source_code: string; total: number }[];
   recent_screenings: ScreeningRequest[];
   recent_alerts: { id: number; title: string; message: string; is_read: boolean }[];
 }
@@ -32,18 +36,21 @@ export default function DashboardPage() {
   }, []);
 
   const chartValues = data?.risk_distribution.map((item) => item.total) ?? [];
+  const timeseriesValues = data?.timeseries?.map((d) => d.total) ?? [];
 
   return (
     <div className="space-y-5">
-      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-6">
         <StatCard eyebrow={t("totalScreenings")} value={data?.totals.screenings ?? 0} accent="bg-teal/10 text-teal" icon={<Activity size={20} />} />
         <StatCard eyebrow={t("criticalScreenings")} value={data?.totals.critical ?? 0} accent="bg-rose-500/10 text-rose-200" icon={<AlertTriangle size={20} />} />
         <StatCard eyebrow={t("pendingScreenings")} value={data?.totals.pending ?? 0} accent="bg-amber-500/10 text-amber-200" icon={<Clock3 size={20} />} />
         <StatCard eyebrow={t("highRiskCountries")} value={data?.totals.high_risk_countries ?? 0} accent="bg-sky-500/10 text-sky-200" icon={<Globe2 size={20} />} />
+        <StatCard eyebrow={t("avgMatchScore")} value={data?.totals.avg_score ?? 0} accent="bg-indigo-500/10 text-indigo-200" icon={<Activity size={20} />} />
+        <StatCard eyebrow={t("unreadAlerts")} value={data?.totals.unread_alerts ?? 0} accent="bg-fuchsia-500/10 text-fuchsia-200" icon={<AlertTriangle size={20} />} />
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[1.4fr_1fr]">
-        <TrendChart values={chartValues} />
+        <TrendChart values={timeseriesValues.length ? timeseriesValues : chartValues} />
         <div className="rounded-lg border border-white/10 bg-white/5 p-5">
           <div className="mb-5 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-white">{t("alerts")}</h3>
@@ -60,6 +67,25 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[1fr_0.8fr]">
+        <div className="rounded-lg border border-white/10 bg-white/5 p-5">
+          <h3 className="mb-4 text-lg font-semibold text-white">Top fontes (últimos 30 dias)</h3>
+          <div className="space-y-2">
+            {(data?.top_sources ?? []).map((s) => (
+              <div key={s.source_code} className="flex items-center justify-between rounded-md bg-ink/60 p-3">
+                <div className="text-sm text-slate-300">{s.source_code}</div>
+                <div className="font-semibold text-white">{s.total}</div>
+              </div>
+            ))}
+            {!data?.top_sources?.length ? <p className="text-sm text-slate-400">Nenhuma fonte encontrada.</p> : null}
+          </div>
+        </div>
+        <div className="rounded-lg border border-white/10 bg-white/5 p-5">
+          <h3 className="mb-4 text-lg font-semibold text-white">Atividade diária</h3>
+          <TrendChart values={timeseriesValues} />
         </div>
       </section>
 
