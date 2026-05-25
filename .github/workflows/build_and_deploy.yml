@@ -1,0 +1,85 @@
+name: Build and Deploy Frontend
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    env:
+      FRONTEND_DIR: frontend
+      BACKEND_DIR: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install frontend dependencies
+        run: |
+          cd ${{ env.FRONTEND_DIR }}
+          npm ci
+
+      - name: Build and export frontend
+        run: |
+          cd ${{ env.FRONTEND_DIR }}
+          npm run build
+          npm run export
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install backend Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f "${{ env.BACKEND_DIR }}/requirements.txt" ]; then pip install -r "${{ env.BACKEND_DIR }}/requirements.txt"; fi
+
+      - name: Copy exported site to backend static
+        run: |
+          mkdir -p ${{ env.BACKEND_DIR }}/static
+          rsync -av --delete ${{ env.FRONTEND_DIR }}/out/ ${{ env.BACKEND_DIR }}/static/
+
+      - name: Run Django collectstatic
+        working-directory: ${{ env.BACKEND_DIR }}
+        run: |
+          python manage.py collectstatic --noinput
+
+      - name: Upload static artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-files
+          path: ${{ env.BACKEND_DIR }}/static
+
+      - name: Optional: Deploy to remote server via rsync over SSH
+        if: ${{ secrets.SSH_HOST }}
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y rsync openssh-client
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+          rsync -av --delete ${{ env.BACKEND_DIR }}/static/ "$SSH_USER@$SSH_HOST:$DEPLOY_PATH"
+
+      - name: Notify
+        run: echo "Build and deploy job finished"
+
+# Notes:
+# - To enable the optional deploy step, add the following secrets in your repository settings:
+#   - SSH_PRIVATE_KEY (private key content)
+#   - SSH_USER (user for SSH)
+#   - SSH_HOST (host to deploy to)
+#   - DEPLOY_PATH (remote path where static files should be copied)
