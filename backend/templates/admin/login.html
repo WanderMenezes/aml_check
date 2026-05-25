@@ -1,0 +1,275 @@
+{% load i18n %}
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE|default:'pt' }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AML Check Enterprise | Admin</title>
+    <style>
+      :root {
+        --bg: #07111a;
+        --panel: #0d1822;
+        --panel-soft: rgba(255, 255, 255, 0.055);
+        --line: rgba(255, 255, 255, 0.1);
+        --text: #f5fbff;
+        --muted: #93a4b4;
+        --teal: #0fb7a7;
+        --gold: #dab66b;
+        --danger: #de5b6d;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background:
+          radial-gradient(circle at 18% 4%, rgba(15, 183, 167, .16), transparent 32%),
+          linear-gradient(180deg, #07111a 0%, #0a1620 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .login-shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: minmax(320px, .9fr) minmax(340px, 480px);
+        gap: 24px;
+        align-items: center;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 32px;
+      }
+
+      .brand-panel,
+      .login-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel-soft);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, .24);
+        backdrop-filter: blur(12px);
+      }
+
+      .brand-panel {
+        min-height: 520px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 32px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        width: fit-content;
+        border: 1px solid rgba(15, 183, 167, .26);
+        border-radius: 999px;
+        background: rgba(15, 183, 167, .08);
+        color: var(--teal);
+        padding: 8px 11px;
+        font-size: 12px;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 18px 0 12px;
+        max-width: 620px;
+        font-size: clamp(34px, 5vw, 56px);
+        line-height: 1;
+      }
+
+      .brand-panel p {
+        max-width: 680px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      .security-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 26px;
+      }
+
+      .security-item {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(7, 17, 26, .62);
+        padding: 15px;
+      }
+
+      .security-item strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 18px;
+      }
+
+      .security-item span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .login-card {
+        padding: 28px;
+      }
+
+      .login-card h2 {
+        margin: 10px 0 8px;
+        font-size: 26px;
+      }
+
+      .login-card .subtitle {
+        margin: 0 0 24px;
+        color: var(--muted);
+      }
+
+      .form-row {
+        margin-bottom: 16px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        min-height: 46px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(7, 17, 26, .92);
+        color: var(--text);
+        padding: 12px 14px;
+        font: inherit;
+      }
+
+      input:focus {
+        outline: 2px solid rgba(15, 183, 167, .34);
+        border-color: rgba(15, 183, 167, .56);
+      }
+
+      .submit-row {
+        margin-top: 22px;
+      }
+
+      input[type="submit"] {
+        width: 100%;
+        min-height: 46px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--teal);
+        color: #051117;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 800;
+      }
+
+      .errornote,
+      .form-row .errorlist {
+        border: 1px solid rgba(222, 91, 109, .32);
+        border-radius: 8px;
+        background: rgba(222, 91, 109, .1);
+        color: #ffc3cb;
+        padding: 12px;
+      }
+
+      .errorlist {
+        margin: 8px 0 0;
+        padding-left: 28px;
+      }
+
+      .login-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .login-links a:hover {
+        color: var(--text);
+      }
+
+      @media (max-width: 900px) {
+        .login-shell {
+          grid-template-columns: 1fr;
+          padding: 18px;
+        }
+
+        .brand-panel {
+          min-height: auto;
+        }
+
+        .security-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="login-shell">
+      <section class="brand-panel" aria-label="AML Check Enterprise">
+        <div>
+          <span class="eyebrow">Compliance Admin</span>
+          <h1>AML Check Enterprise</h1>
+          <p>Área administrativa para gestão de utilizadores, sessões, screenings, relatórios e auditoria operacional.</p>
+        </div>
+        <div class="security-grid">
+          <div class="security-item"><strong>AML</strong><span>Screening e risco</span></div>
+          <div class="security-item"><strong>KYC</strong><span>Clientes e auditoria</span></div>
+          <div class="security-item"><strong>PDF</strong><span>Relatórios assinados</span></div>
+        </div>
+      </section>
+
+      <section class="login-card" aria-label="Admin login">
+        <span class="eyebrow">Admin seguro</span>
+        <h2>Entrar no Django Admin</h2>
+        <p class="subtitle">Use a conta administrativa criada no bootstrap do sistema.</p>
+
+        {% if form.errors and not form.non_field_errors %}
+          <p class="errornote">Verifique o e-mail e a senha informados.</p>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+          {% for error in form.non_field_errors %}
+            <p class="errornote">{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+
+        <form action="{{ app_path }}" method="post" id="login-form">
+          {% csrf_token %}
+          <div class="form-row">
+            {{ form.username.errors }}
+            <label for="{{ form.username.id_for_label }}">E-mail</label>
+            {{ form.username }}
+          </div>
+          <div class="form-row">
+            {{ form.password.errors }}
+            <label for="{{ form.password.id_for_label }}">Senha</label>
+            {{ form.password }}
+            <input type="hidden" name="next" value="{{ next }}" />
+          </div>
+          <div class="submit-row">
+            <input type="submit" value="Entrar" />
+          </div>
+        </form>
+
+        <div class="login-links">
+          <a href="/">Voltar ao portal</a>
+          <a href="/health/">Estado do sistema</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

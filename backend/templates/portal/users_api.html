@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AML Check Enterprise | Utilizadores</title>
+    <style>
+      :root {
+        --bg: #07111a;
+        --panel: rgba(255, 255, 255, 0.05);
+        --line: rgba(255, 255, 255, 0.1);
+        --text: #f5fbff;
+        --muted: #93a4b4;
+        --teal: #0fb7a7;
+        --gold: #dab66b;
+        --danger: #de5b6d;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background:
+          radial-gradient(circle at 18% 0%, rgba(15, 183, 167, .16), transparent 30%),
+          linear-gradient(180deg, #07111a 0%, #0a1620 100%);
+        color: var(--text);
+      }
+
+      a { color: inherit; text-decoration: none; }
+
+      .wrap {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .topbar,
+      .hero,
+      .card,
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, .2);
+        backdrop-filter: blur(12px);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 18px;
+        padding: 14px;
+      }
+
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .btn {
+        display: inline-flex;
+        min-height: 38px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, .05);
+        padding: 9px 12px;
+        font-weight: 700;
+      }
+
+      .btn.primary {
+        border-color: transparent;
+        background: var(--teal);
+        color: #051117;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: center;
+        padding: 26px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        width: fit-content;
+        border: 1px solid rgba(15, 183, 167, .26);
+        border-radius: 999px;
+        background: rgba(15, 183, 167, .08);
+        color: var(--teal);
+        padding: 8px 11px;
+        font-size: 12px;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 14px 0 8px;
+        font-size: 34px;
+      }
+
+      p { color: var(--muted); line-height: 1.55; }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin: 18px 0;
+      }
+
+      .stat {
+        padding: 18px;
+      }
+
+      .stat small {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--muted);
+      }
+
+      .stat strong { font-size: 30px; }
+
+      .card {
+        padding: 20px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid rgba(255, 255, 255, .08);
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        min-width: 860px;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid rgba(255, 255, 255, .06);
+        padding: 13px 12px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .badge {
+        display: inline-flex;
+        border-radius: 999px;
+        background: rgba(15, 183, 167, .12);
+        color: #85f3df;
+        padding: 6px 9px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .restricted {
+        border-color: rgba(218, 182, 107, .35);
+        background: rgba(218, 182, 107, .1);
+      }
+
+      @media (max-width: 760px) {
+        .wrap { padding: 14px; }
+        .hero,
+        .stats {
+          grid-template-columns: 1fr;
+        }
+        .topbar {
+          align-items: stretch;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <nav class="topbar">
+        <strong>AML Check Enterprise</strong>
+        <div class="links">
+          <a class="btn" href="/">Portal</a>
+          <a class="btn" href="/admin/users/user/">Admin Users</a>
+          <a class="btn" href="/api/docs/">Swagger</a>
+          <a class="btn" href="/api/users/?format=json">JSON</a>
+        </div>
+      </nav>
+
+      <section class="hero">
+        <div>
+          <span class="eyebrow">Users API</span>
+          <h1>Gestão de Utilizadores</h1>
+          <p>Esta página apresenta uma visão operacional da API de utilizadores. A resposta JSON continua protegida para clientes autenticados.</p>
+        </div>
+        <a class="btn primary" href="/admin/login/?next=/api/users/">Entrar no Admin</a>
+      </section>
+
+      {% if can_view_users %}
+        <section class="stats">
+          <div class="stat"><small>Total</small><strong>{{ total_users }}</strong></div>
+          <div class="stat"><small>Ativos</small><strong>{{ active_users }}</strong></div>
+          <div class="stat"><small>Sessões abertas</small><strong>{{ session_total }}</strong></div>
+        </section>
+
+        <section class="card">
+          <h2>Utilizadores</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>E-mail</th>
+                  <th>Nome</th>
+                  <th>Perfil</th>
+                  <th>Idioma</th>
+                  <th>Status</th>
+                  <th>Último login</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                  <tr>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.get_full_name|default:"-" }}</td>
+                    <td><span class="badge">{{ user.role }}</span></td>
+                    <td>{{ user.preferred_language|upper }}</td>
+                    <td>{{ user.is_active|yesno:"Ativo,Inativo" }}</td>
+                    <td>{{ user.last_login|default:"-" }}</td>
+                  </tr>
+                {% empty %}
+                  <tr><td colspan="6">Sem utilizadores.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      {% else %}
+        <section class="card restricted">
+          <span class="eyebrow">Acesso restrito</span>
+          <h2>Inicie sessão no Django Admin</h2>
+          <p>Por segurança, os detalhes dos utilizadores só aparecem aqui quando existe uma sessão administrativa ativa. A API JSON mantém as regras de autenticação do backend.</p>
+          <div class="links">
+            <a class="btn primary" href="/admin/login/?next=/api/users/">Entrar</a>
+            <a class="btn" href="/admin/users/user/">Abrir utilizadores no Admin</a>
+          </div>
+        </section>
+      {% endif %}
+    </div>
+  </body>
+</html>

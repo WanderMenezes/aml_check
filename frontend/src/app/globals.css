@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background: #07111a;
+}
+
+.dark body {
+  color-scheme: dark;
+}
+
+body,
+html {
+  min-height: 100%;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 183, 167, 0.45) transparent;
+}

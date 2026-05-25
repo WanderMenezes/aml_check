@@ -1,0 +1,392 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title|default:"Admin" }} | AML Check Enterprise{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  :root {
+    --primary: #0b6b60;
+    --primary-fg: #ffffff;
+    --secondary: #1c2b36;
+    --accent: #b7791f;
+    --body-bg: #f4f6f8;
+    --body-fg: #16212b;
+    --body-quiet-color: #697887;
+    --body-medium-color: #4f6272;
+    --body-loud-color: #0e1720;
+    --link-fg: #096b61;
+    --link-hover-color: #0b8175;
+    --link-selected-fg: #8a5d17;
+    --hairline-color: #dbe3e9;
+    --border-color: #d3dde5;
+    --darkened-bg: #e9eef2;
+    --selected-bg: #e7f4f2;
+    --selected-row: #fff5df;
+    --button-bg: #0b6b60;
+    --button-hover-bg: #07584f;
+    --default-button-bg: #1c2b36;
+    --default-button-hover-bg: #0f1921;
+    --delete-button-bg: #b3394a;
+    --delete-button-hover-bg: #982f3e;
+    font-family: "Segoe UI", Arial, sans-serif;
+  }
+
+  html[data-theme="dark"] {
+    --primary: #19a394;
+    --primary-fg: #061210;
+    --secondary: #d7e4e2;
+    --accent: #d6a94c;
+    --body-bg: #10161b;
+    --body-fg: #edf5f3;
+    --body-quiet-color: #a7b6bf;
+    --body-medium-color: #cad7dd;
+    --body-loud-color: #ffffff;
+    --link-fg: #74d8ca;
+    --link-hover-color: #a7efe5;
+    --link-selected-fg: #f0c36d;
+    --hairline-color: #25323c;
+    --border-color: #31414d;
+    --darkened-bg: #172029;
+    --selected-bg: #173a37;
+    --selected-row: #3a2b13;
+  }
+
+  body {
+    background:
+      linear-gradient(180deg, rgba(11, 107, 96, 0.08), rgba(244, 246, 248, 0) 260px),
+      var(--body-bg);
+  }
+
+  a:link,
+  a:visited {
+    color: var(--link-fg);
+  }
+
+  #container {
+    min-width: 0;
+  }
+
+  #header {
+    min-height: 64px;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--body-fg);
+    border-bottom: 1px solid var(--hairline-color);
+    box-shadow: 0 10px 28px rgba(22, 33, 43, 0.08);
+    padding: 12px clamp(18px, 4vw, 42px);
+  }
+
+  html[data-theme="dark"] #header {
+    background: rgba(16, 22, 27, 0.94);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.26);
+  }
+
+  #branding {
+    display: flex;
+    align-items: center;
+    min-width: 220px;
+  }
+
+  .aml-brand a {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--body-loud-color);
+  }
+
+  .aml-brand-mark {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 8px;
+    background: #0b6b60;
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .aml-brand strong,
+  .aml-brand span span {
+    display: block;
+  }
+
+  .aml-brand strong {
+    font-size: 16px;
+    line-height: 1.1;
+  }
+
+  .aml-brand span span {
+    margin-top: 3px;
+    color: var(--body-quiet-color);
+    font-size: 12px;
+  }
+
+  .aml-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-left: clamp(18px, 4vw, 36px);
+    order: 2;
+  }
+
+  .aml-nav a,
+  #user-tools a,
+  #logout-form button {
+    border: 1px solid var(--hairline-color);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--body-fg);
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 1;
+    text-transform: none;
+  }
+
+  html[data-theme="dark"] .aml-nav a,
+  html[data-theme="dark"] #user-tools a,
+  html[data-theme="dark"] #logout-form button {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .aml-nav a:hover,
+  #user-tools a:hover,
+  #logout-form button:hover {
+    border-color: rgba(11, 107, 96, 0.35);
+    color: var(--link-hover-color);
+  }
+
+  #user-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-left: auto;
+    order: 3;
+    color: var(--body-quiet-color);
+    font-size: 12px;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  #logout-form {
+    display: inline-flex;
+  }
+
+  #logout-form button {
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .theme-toggle svg {
+    color: var(--body-medium-color);
+  }
+
+  .breadcrumbs {
+    border-bottom: 1px solid var(--hairline-color);
+    background: transparent;
+    color: var(--body-quiet-color);
+    padding: 14px clamp(18px, 4vw, 42px);
+  }
+
+  .breadcrumbs a {
+    color: var(--link-fg);
+  }
+
+  .main > .content {
+    padding: 26px clamp(18px, 4vw, 42px);
+  }
+
+  #content {
+    max-width: 1260px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    color: var(--body-loud-color);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .module {
+    overflow: hidden;
+    border: 1px solid var(--hairline-color);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 16px 34px rgba(22, 33, 43, 0.07);
+  }
+
+  html[data-theme="dark"] .module {
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+  }
+
+  .module caption,
+  .inline-group h2,
+  .module h2 {
+    background: linear-gradient(90deg, #0b6b60, #1c2b36);
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .module caption a.section,
+  .module caption a.section:visited {
+    color: #ffffff;
+  }
+
+  .module table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .module table th,
+  .module table td {
+    border-bottom: 1px solid var(--hairline-color);
+    padding: 13px 14px;
+    vertical-align: middle;
+  }
+
+  .module table tr:last-child th,
+  .module table tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .module table tbody tr:hover {
+    background: var(--selected-bg);
+  }
+
+  .dashboard .module table th a {
+    color: var(--body-loud-color);
+    font-weight: 750;
+  }
+
+  .addlink,
+  .changelink,
+  .viewlink {
+    display: inline-flex;
+    min-height: 30px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background-image: none;
+    font-weight: 700;
+    line-height: 1;
+    padding: 8px 10px;
+  }
+
+  .addlink {
+    background-color: rgba(11, 107, 96, 0.12);
+    color: #0b6b60;
+  }
+
+  .changelink,
+  .viewlink {
+    background-color: rgba(183, 121, 31, 0.14);
+    color: #8a5d17;
+  }
+
+  html[data-theme="dark"] .addlink {
+    color: #83e5d7;
+  }
+
+  html[data-theme="dark"] .changelink,
+  html[data-theme="dark"] .viewlink {
+    color: #f0c36d;
+  }
+
+  .object-tools a,
+  input[type="submit"],
+  input[type="button"],
+  .submit-row input,
+  a.button {
+    border-radius: 8px;
+    font-weight: 800;
+  }
+
+  input,
+  textarea,
+  select,
+  .vTextField {
+    border-radius: 8px;
+  }
+
+  @media (max-width: 920px) {
+    #header {
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .aml-nav {
+      width: 100%;
+      margin-left: 0;
+      order: 3;
+    }
+
+    #user-tools {
+      justify-content: flex-start;
+    }
+
+    .main > .content {
+      padding-top: 20px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #header,
+    #user-tools,
+    .aml-nav {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .aml-nav a,
+    #user-tools a,
+    #logout-form button {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block branding %}
+<div class="aml-brand" id="site-name">
+  <a href="{% url 'admin:index' %}" aria-label="AML Check Enterprise Admin">
+    <span class="aml-brand-mark">AML</span>
+    <span>
+      <strong>AML Check</strong>
+      <span>Enterprise Admin</span>
+    </span>
+  </a>
+</div>
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+
+{% block nav-global %}
+<nav class="aml-nav" aria-label="Atalhos administrativos">
+  <a href="/">Portal</a>
+  <a href="/api/users/">Utilizadores API</a>
+  <a href="/api/docs/">API Docs</a>
+  <a href="/health/">Estado</a>
+</nav>
+{% endblock %}
+
+{% block userlinks %}
+  {% if site_url %}
+    <a href="{{ site_url }}">Portal</a>
+  {% endif %}
+  {% if user.has_usable_password %}
+    <a href="{% url 'admin:password_change' %}">Senha</a>
+  {% endif %}
+  <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+    {% csrf_token %}
+    <button type="submit">Sair</button>
+  </form>
+  {% include "admin/color_theme_toggle.html" %}
+{% endblock %}

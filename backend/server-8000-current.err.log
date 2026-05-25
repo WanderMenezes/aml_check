@@ -1,0 +1,41 @@
+[25/May/2026 17:57:23] "GET /admin/intelligence/syncjoblog/add/ HTTP/1.1" 200 32082
+[25/May/2026 17:57:23] "GET /admin/jsi18n/ HTTP/1.1" 200 7210
+[25/May/2026 17:57:25] "GET / HTTP/1.1" 200 58422
+[25/May/2026 17:57:25] "GET /admin/login/?next=/ HTTP/1.1" 200 6879
+[25/May/2026 17:57:26] "POST /admin/login/?next=/ HTTP/1.1" 302 0
+[25/May/2026 17:57:29] "GET / HTTP/1.1" 200 67134
+[25/May/2026 17:57:31] "GET / HTTP/1.1" 200 67134
+[25/May/2026 18:01:30] "GET / HTTP/1.1" 200 58422
+[25/May/2026 18:01:30] "GET /admin/ HTTP/1.1" 302 0
+[25/May/2026 18:01:32] "GET /health/ HTTP/1.1" 200 118
+[25/May/2026 18:02:17] "GET / HTTP/1.1" 200 58422
+[25/May/2026 18:02:18,245] - Broken pipe from ('127.0.0.1', 50028)
+2026-05-25 18:02:20,147 WARNING django.request Not Found: /favicon.ico
+[25/May/2026 18:02:20,149] - Broken pipe from ('127.0.0.1', 63894)
+[25/May/2026 18:02:45] "GET / HTTP/1.1" 200 58422
+2026-05-25 18:02:47,484 WARNING django.request Not Found: /favicon.ico
+[25/May/2026 18:02:47,485] - Broken pipe from ('127.0.0.1', 65244)
+[25/May/2026 18:15:00] "GET /admin/intelligence/syncjoblog/add/ HTTP/1.1" 200 32082
+[25/May/2026 18:15:00] "GET /admin/jsi18n/ HTTP/1.1" 200 7210
+[25/May/2026 18:21:19] "GET / HTTP/1.1" 200 58422
+2026-05-25 18:21:22,475 WARNING django.request Not Found: /favicon.ico
+[25/May/2026 18:21:22] "GET /favicon.ico HTTP/1.1" 404 179
+[25/May/2026 18:27:47] "GET / HTTP/1.1" 200 67134
+[25/May/2026 18:29:23] "POST /portal-admin/search-links/create/ HTTP/1.1" 302 0
+[25/May/2026 18:29:25] "GET /?lang=pt HTTP/1.1" 200 67974
+[25/May/2026 18:30:13] "POST /run-screening/ HTTP/1.1" 302 0
+[25/May/2026 18:30:15] "GET /?screening=20&lang=pt HTTP/1.1" 200 69544
+[25/May/2026 18:30:35] "POST /portal-reports/20/pdf/ HTTP/1.1" 200 3391
+[25/May/2026 18:32:52] "POST /run-screening/ HTTP/1.1" 302 0
+[25/May/2026 18:32:54] "GET /?screening=21&lang=en HTTP/1.1" 200 70245
+[25/May/2026 18:33:10] "POST /portal-reports/21/pdf/ HTTP/1.1" 200 3331
+[25/May/2026 18:36:06] "POST /run-screening/ HTTP/1.1" 302 0
+[25/May/2026 18:36:08] "GET /?screening=22&lang=pt HTTP/1.1" 200 70239
+[25/May/2026 18:36:15] "POST /portal-reports/22/pdf/ HTTP/1.1" 200 3375
+[25/May/2026 18:45:10] "POST /run-screening/ HTTP/1.1" 302 0
+[25/May/2026 18:45:12] "GET /?screening=23&lang=pt HTTP/1.1" 200 70256
+[25/May/2026 18:46:33] "GET /?screening=23&lang=pt HTTP/1.1" 200 70256
+2026-05-25 18:46:36,585 WARNING django.request Not Found: /favicon.ico
+[25/May/2026 18:46:36] "GET /favicon.ico HTTP/1.1" 404 179
+[25/May/2026 18:46:49] "POST /run-screening/ HTTP/1.1" 302 0
+[25/May/2026 18:46:51] "GET /?screening=24&lang=pt HTTP/1.1" 200 70213

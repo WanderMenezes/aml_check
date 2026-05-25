@@ -1,0 +1,404 @@
+{% extends "admin/base_site.html" %}
+{% load i18n log %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  .dashboard #content {
+    max-width: 1280px;
+  }
+
+  .aml-dashboard-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+    gap: 20px;
+    align-items: stretch;
+    margin-bottom: 22px;
+    border: 1px solid var(--hairline-color);
+    border-radius: 8px;
+    background:
+      linear-gradient(135deg, rgba(11, 107, 96, 0.95), rgba(28, 43, 54, 0.96)),
+      #1c2b36;
+    color: #ffffff;
+    overflow: hidden;
+  }
+
+  .aml-dashboard-title {
+    padding: clamp(22px, 4vw, 34px);
+  }
+
+  .aml-eyebrow {
+    margin: 0 0 12px;
+    color: #f0c36d;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .aml-dashboard-title h1 {
+    display: block;
+    margin: 0;
+    max-width: 760px;
+    color: #ffffff;
+    font-size: clamp(30px, 5vw, 50px);
+    line-height: 1;
+  }
+
+  .aml-dashboard-title p {
+    max-width: 760px;
+    margin: 14px 0 0;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .aml-session-panel {
+    display: grid;
+    align-content: center;
+    gap: 12px;
+    padding: clamp(20px, 4vw, 30px);
+    background: rgba(255, 255, 255, 0.08);
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .aml-session-panel span {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .aml-session-panel strong {
+    color: #ffffff;
+    font-size: 20px;
+    overflow-wrap: anywhere;
+  }
+
+  .aml-session-panel a {
+    display: inline-flex;
+    width: fit-content;
+    min-height: 38px;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 8px;
+    color: #ffffff;
+    padding: 9px 12px;
+    font-weight: 800;
+  }
+
+  .aml-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .aml-quick-actions a {
+    display: grid;
+    min-height: 88px;
+    align-content: center;
+    gap: 5px;
+    border: 1px solid var(--hairline-color);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.84);
+    color: var(--body-fg);
+    padding: 14px;
+    box-shadow: 0 10px 24px rgba(22, 33, 43, 0.06);
+  }
+
+  html[data-theme="dark"] .aml-quick-actions a {
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  }
+
+  .aml-quick-actions a:hover {
+    border-color: rgba(11, 107, 96, 0.38);
+    transform: translateY(-1px);
+  }
+
+  .aml-quick-actions strong {
+    color: var(--body-loud-color);
+    font-size: 15px;
+  }
+
+  .aml-quick-actions span {
+    color: var(--body-quiet-color);
+    font-size: 12px;
+  }
+
+  .aml-admin-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    gap: 22px;
+    align-items: start;
+  }
+
+  .aml-section-head {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin: 0 0 12px;
+  }
+
+  .aml-section-head h2 {
+    margin: 0;
+    color: var(--body-loud-color);
+    font-size: 20px;
+  }
+
+  .aml-section-head span {
+    color: var(--body-quiet-color);
+    font-size: 13px;
+  }
+
+  .dashboard .app-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .dashboard .app-list .module {
+    margin: 0;
+  }
+
+  .dashboard .app-list table,
+  .dashboard .app-list tbody,
+  .dashboard .app-list tr {
+    width: 100%;
+  }
+
+  .dashboard .app-list tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .dashboard .app-list th,
+  .dashboard .app-list td {
+    display: block;
+  }
+
+  .aml-side-stack {
+    display: grid;
+    gap: 16px;
+  }
+
+  .aml-side-module {
+    border: 1px solid var(--hairline-color);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.84);
+    box-shadow: 0 10px 24px rgba(22, 33, 43, 0.06);
+    overflow: hidden;
+  }
+
+  html[data-theme="dark"] .aml-side-module {
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  }
+
+  .aml-side-module h2 {
+    margin: 0;
+    background: linear-gradient(90deg, #1c2b36, #0b6b60);
+    color: #ffffff;
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .aml-side-module .module-body {
+    padding: 14px;
+  }
+
+  .aml-side-module p {
+    margin: 0;
+    color: var(--body-quiet-color);
+  }
+
+  .aml-link-list {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .aml-link-list a {
+    display: flex;
+    min-height: 38px;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--hairline-color);
+    border-radius: 8px;
+    color: var(--body-fg);
+    padding: 9px 10px;
+  }
+
+  .aml-link-list a:hover {
+    border-color: rgba(11, 107, 96, 0.35);
+    color: var(--link-hover-color);
+  }
+
+  #recent-actions-module {
+    margin: 0;
+  }
+
+  #recent-actions-module h3 {
+    margin: 0 0 12px;
+    color: var(--body-medium-color);
+    font-size: 13px;
+  }
+
+  #recent-actions-module .actionlist {
+    margin: 0;
+    padding: 0;
+  }
+
+  #recent-actions-module .actionlist li {
+    margin: 0;
+    border-bottom: 1px solid var(--hairline-color);
+    padding: 12px 0 12px 26px;
+  }
+
+  #recent-actions-module .actionlist li:last-child {
+    border-bottom: 0;
+  }
+
+  @media (max-width: 1120px) {
+    .aml-admin-grid,
+    .aml-dashboard-head {
+      grid-template-columns: 1fr;
+    }
+
+    .aml-session-panel {
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      border-left: 0;
+    }
+
+    .aml-quick-actions {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .dashboard .app-list,
+    .aml-quick-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard .app-list tr {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard .app-list td {
+      padding-top: 0;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard aml-dashboard{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<section class="aml-dashboard-head" aria-label="Resumo administrativo">
+  <div class="aml-dashboard-title">
+    <p class="aml-eyebrow">Centro de controlo</p>
+    <h1>AML Check Enterprise</h1>
+    <p>Gestão administrativa de utilizadores, sessões, listas de risco, screenings, relatórios e auditoria operacional.</p>
+  </div>
+  <div class="aml-session-panel">
+    <span>Sessão ativa</span>
+    <strong>{% firstof user.email user.get_username %}</strong>
+    <a href="{% url 'admin:password_change' %}">Alterar senha</a>
+  </div>
+</section>
+
+<nav class="aml-quick-actions" aria-label="Ações rápidas">
+  <a href="/admin/users/user/">
+    <strong>Utilizadores</strong>
+    <span>Contas e permissões</span>
+  </a>
+  <a href="/admin/screening/screeningrequest/">
+    <strong>Screenings</strong>
+    <span>Pedidos e decisões</span>
+  </a>
+  <a href="/admin/intelligence/watchlistentry/">
+    <strong>Watchlists</strong>
+    <span>Entidades monitorizadas</span>
+  </a>
+  <a href="/admin/audit/auditevent/">
+    <strong>Auditoria</strong>
+    <span>Eventos do sistema</span>
+  </a>
+  <a href="/api/docs/">
+    <strong>API</strong>
+    <span>Documentação técnica</span>
+  </a>
+</nav>
+
+<div class="aml-admin-grid">
+  <section aria-labelledby="aml-apps-heading">
+    <div class="aml-section-head">
+      <h2 id="aml-apps-heading">Aplicações</h2>
+      <span>{{ app_list|length }} áreas administrativas</span>
+    </div>
+    <div id="content-main" class="app-list">
+      {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+    </div>
+  </section>
+
+  <aside class="aml-side-stack" aria-label="Atividade e atalhos">
+    <section class="aml-side-module">
+      <h2>Atalhos úteis</h2>
+      <div class="module-body">
+        <ul class="aml-link-list">
+          <li><a href="/">Portal <span>abrir</span></a></li>
+          <li><a href="/api/users/">API de utilizadores <span>JSON</span></a></li>
+          <li><a href="/health/">Estado do sistema <span>ok</span></a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="aml-side-module" id="recent-actions-module">
+      <h2>{% translate 'Recent actions' %}</h2>
+      <div class="module-body">
+        <h3>{% translate 'My actions' %}</h3>
+        {% get_admin_log 8 as admin_log for_user user %}
+        {% if not admin_log %}
+          <p>{% translate 'None available' %}</p>
+        {% else %}
+          <ul class="actionlist">
+          {% for entry in admin_log %}
+            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+              <span class="visually-hidden">{% if entry.is_addition %}{% translate 'Added:' %}{% elif entry.is_change %}{% translate 'Changed:' %}{% elif entry.is_deletion %}{% translate 'Deleted:' %}{% endif %}</span>
+              {% if entry.is_deletion or not entry.get_admin_url %}
+                {{ entry.object_repr }}
+              {% else %}
+                <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+              {% endif %}
+              <br>
+              {% if entry.content_type %}
+                <span class="mini quiet">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
+              {% else %}
+                <span class="mini quiet">{% translate 'Unknown content' %}</span>
+              {% endif %}
+            </li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </section>
+  </aside>
+</div>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
