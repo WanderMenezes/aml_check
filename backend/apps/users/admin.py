@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 
-from apps.users.models import User, UserSession
+from apps.users.models import CompanyProfile, User, UserSession
 
 
 @admin.register(User)
@@ -22,3 +22,9 @@ class UserSessionAdmin(admin.ModelAdmin):
     list_display = ("user", "session_key", "ip_address", "expires_at", "is_revoked")
     search_fields = ("user__email", "session_key", "refresh_jti")
     list_filter = ("is_revoked",)
+
+
+@admin.register(CompanyProfile)
+class CompanyProfileAdmin(admin.ModelAdmin):
+    list_display = ("legal_name", "trading_name", "tax_id", "email", "updated_at")
+    search_fields = ("legal_name", "trading_name", "tax_id", "email")

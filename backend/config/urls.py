@@ -9,10 +9,13 @@ from common.portal import (
     portal_admin_logout,
     portal_create_search_link,
     portal_create_user,
+    portal_delete_search_link,
     portal_home,
     portal_report_csv,
     portal_report_pdf,
     portal_screening,
+    portal_update_company_profile,
+    portal_update_search_link,
 )
 from common.schemas.openapi import redoc_ui, schema_view, swagger_ui
 
@@ -38,6 +41,9 @@ urlpatterns = [
     path("portal-admin/logout/", portal_admin_logout, name="portal-admin-logout"),
     path("portal-admin/users/create/", portal_create_user, name="portal-create-user"),
     path("portal-admin/search-links/create/", portal_create_search_link, name="portal-create-search-link"),
+    path("portal-admin/search-links/<int:source_id>/update/", portal_update_search_link, name="portal-update-search-link"),
+    path("portal-admin/search-links/<int:source_id>/delete/", portal_delete_search_link, name="portal-delete-search-link"),
+    path("portal-admin/company-profile/", portal_update_company_profile, name="portal-company-profile"),
     path("run-screening/", portal_screening, name="portal-screening"),
     path("portal-reports/<int:screening_id>/pdf/", portal_report_pdf, name="portal-report-pdf"),
     path("portal-reports/<int:screening_id>/csv/", portal_report_csv, name="portal-report-csv"),

@@ -11,6 +11,8 @@ class CountrySerializer(serializers.ModelSerializer):
 
 
 class SanctionsSourceSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(required=False, allow_blank=True, max_length=20)
+
     class Meta:
         model = SanctionsSource
         fields = "__all__"
@@ -51,6 +53,8 @@ class SanctionsSourceSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if not validated_data.get("code"):
             validated_data["code"] = self._generate_code_from_name(validated_data.get("name", ""))
+        validated_data["enabled"] = True
+        validated_data.setdefault("health_status", SanctionsSource.HealthStatus.OK)
         return super().create(validated_data)
 
     def update(self, instance, validated_data):

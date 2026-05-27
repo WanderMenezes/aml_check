@@ -1,7 +1,14 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from apps.screening.api.views import AlertViewSet, ClientViewSet, DashboardView, ReportViewSet, ScreeningRequestViewSet
+from apps.screening.api.views import (
+    AlertViewSet,
+    ClientViewSet,
+    DashboardView,
+    ExternalSearchView,
+    ReportViewSet,
+    ScreeningRequestViewSet,
+)
 
 router = DefaultRouter()
 router.include_format_suffixes = False

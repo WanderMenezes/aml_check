@@ -1,56 +1,74 @@
-[25/May/2026 17:57:23] "GET /admin/intelligence/syncjoblog/add/ HTTP/1.1" 200 32082
-[25/May/2026 17:57:23] "GET /admin/jsi18n/ HTTP/1.1" 200 7210
-[25/May/2026 17:57:25] "GET / HTTP/1.1" 200 58422
-[25/May/2026 17:57:25] "GET /admin/login/?next=/ HTTP/1.1" 200 6879
-[25/May/2026 17:57:26] "POST /admin/login/?next=/ HTTP/1.1" 302 0
-[25/May/2026 17:57:29] "GET / HTTP/1.1" 200 67134
-[25/May/2026 17:57:31] "GET / HTTP/1.1" 200 67134
-[25/May/2026 18:01:30] "GET / HTTP/1.1" 200 58422
-[25/May/2026 18:01:30] "GET /admin/ HTTP/1.1" 302 0
-[25/May/2026 18:01:32] "GET /health/ HTTP/1.1" 200 118
-[25/May/2026 18:02:17] "GET / HTTP/1.1" 200 58422
-[25/May/2026 18:02:18,245] - Broken pipe from ('127.0.0.1', 50028)
-2026-05-25 18:02:20,147 WARNING django.request Not Found: /favicon.ico
-[25/May/2026 18:02:20,149] - Broken pipe from ('127.0.0.1', 63894)
-[25/May/2026 18:02:45] "GET / HTTP/1.1" 200 58422
-2026-05-25 18:02:47,484 WARNING django.request Not Found: /favicon.ico
-[25/May/2026 18:02:47,485] - Broken pipe from ('127.0.0.1', 65244)
-[25/May/2026 18:15:00] "GET /admin/intelligence/syncjoblog/add/ HTTP/1.1" 200 32082
-[25/May/2026 18:15:00] "GET /admin/jsi18n/ HTTP/1.1" 200 7210
-[25/May/2026 18:21:19] "GET / HTTP/1.1" 200 58422
-2026-05-25 18:21:22,475 WARNING django.request Not Found: /favicon.ico
-[25/May/2026 18:21:22] "GET /favicon.ico HTTP/1.1" 404 179
-[25/May/2026 18:27:47] "GET / HTTP/1.1" 200 67134
-[25/May/2026 18:29:23] "POST /portal-admin/search-links/create/ HTTP/1.1" 302 0
-[25/May/2026 18:29:25] "GET /?lang=pt HTTP/1.1" 200 67974
-[25/May/2026 18:30:13] "POST /run-screening/ HTTP/1.1" 302 0
-[25/May/2026 18:30:15] "GET /?screening=20&lang=pt HTTP/1.1" 200 69544
-[25/May/2026 18:30:35] "POST /portal-reports/20/pdf/ HTTP/1.1" 200 3391
-[25/May/2026 18:32:52] "POST /run-screening/ HTTP/1.1" 302 0
-[25/May/2026 18:32:54] "GET /?screening=21&lang=en HTTP/1.1" 200 70245
-[25/May/2026 18:33:10] "POST /portal-reports/21/pdf/ HTTP/1.1" 200 3331
-[25/May/2026 18:36:06] "POST /run-screening/ HTTP/1.1" 302 0
-[25/May/2026 18:36:08] "GET /?screening=22&lang=pt HTTP/1.1" 200 70239
-[25/May/2026 18:36:15] "POST /portal-reports/22/pdf/ HTTP/1.1" 200 3375
-[25/May/2026 18:45:10] "POST /run-screening/ HTTP/1.1" 302 0
-[25/May/2026 18:45:12] "GET /?screening=23&lang=pt HTTP/1.1" 200 70256
-[25/May/2026 18:46:33] "GET /?screening=23&lang=pt HTTP/1.1" 200 70256
-2026-05-25 18:46:36,585 WARNING django.request Not Found: /favicon.ico
-[25/May/2026 18:46:36] "GET /favicon.ico HTTP/1.1" 404 179
-[25/May/2026 18:46:49] "POST /run-screening/ HTTP/1.1" 302 0
-[25/May/2026 18:46:51] "GET /?screening=24&lang=pt HTTP/1.1" 200 70213
-[25/May/2026 18:53:12] "GET /?screening=24&lang=pt HTTP/1.1" 200 70797
-[25/May/2026 18:53:42] "GET /health/ HTTP/1.1" 200 118
-[25/May/2026 19:00:59] "GET /?screening=24&lang=pt HTTP/1.1" 200 71093
-[25/May/2026 19:01:09] "POST /run-screening/ HTTP/1.1" 302 0
-[25/May/2026 19:01:11] "GET /?screening=32&lang=pt HTTP/1.1" 200 74576
-[25/May/2026 19:01:50] "POST /portal-reports/31/pdf/ HTTP/1.1" 200 3699
-[25/May/2026 19:16:11] "GET /?screening=32&lang=pt HTTP/1.1" 200 74590
-[25/May/2026 19:16:57] "GET /?screening=32&lang=pt HTTP/1.1" 200 74590
-2026-05-25 19:17:00,329 WARNING django.request Not Found: /favicon.ico
-[25/May/2026 19:17:00] "GET /favicon.ico HTTP/1.1" 404 179
-[25/May/2026 19:17:07] "POST /run-screening/ HTTP/1.1" 302 0
-[25/May/2026 19:17:09] "GET /?screening=34&lang=pt HTTP/1.1" 200 74602
-[25/May/2026 19:17:34] "POST /portal-reports/19/pdf/ HTTP/1.1" 200 3396
-[25/May/2026 19:19:32] "GET /?screening=34&lang=pt HTTP/1.1" 200 74604
-[25/May/2026 19:23:44] "GET / HTTP/1.1" 200 69351
+[26/May/2026 22:47:51] "GET /?lang=pt HTTP/1.1" 200 286125
+2026-05-26 22:47:56,026 WARNING django.request Not Found: /service-worker.js
+[26/May/2026 22:47:56] "GET /service-worker.js HTTP/1.1" 404 179
+[26/May/2026 22:48:00] "GET /?lang=pt HTTP/1.1" 200 286125
+2026-05-26 22:48:14,201 ERROR celery.backends.redis Connection to Redis lost: Retry (0/20) now.
+2026-05-26 22:48:16,263 ERROR celery.backends.redis Connection to Redis lost: Retry (1/20) in 1.00 second.
+2026-05-26 22:48:19,295 ERROR celery.backends.redis Connection to Redis lost: Retry (2/20) in 1.00 second.
+2026-05-26 22:48:22,339 ERROR celery.backends.redis Connection to Redis lost: Retry (3/20) in 1.00 second.
+2026-05-26 22:48:25,372 ERROR celery.backends.redis Connection to Redis lost: Retry (4/20) in 1.00 second.
+2026-05-26 22:48:28,434 ERROR celery.backends.redis Connection to Redis lost: Retry (5/20) in 1.00 second.
+2026-05-26 22:48:31,485 ERROR celery.backends.redis Connection to Redis lost: Retry (6/20) in 1.00 second.
+2026-05-26 22:48:34,563 ERROR celery.backends.redis Connection to Redis lost: Retry (7/20) in 1.00 second.
+2026-05-26 22:48:37,604 ERROR celery.backends.redis Connection to Redis lost: Retry (8/20) in 1.00 second.
+2026-05-26 22:48:40,604 WARNING django.request Not Found: /service-worker.js
+[26/May/2026 22:48:40] "GET /service-worker.js HTTP/1.1" 404 179
+2026-05-26 22:48:40,631 ERROR celery.backends.redis Connection to Redis lost: Retry (9/20) in 1.00 second.
+2026-05-26 22:48:43,688 ERROR celery.backends.redis Connection to Redis lost: Retry (10/20) in 1.00 second.
+2026-05-26 22:48:46,742 ERROR celery.backends.redis Connection to Redis lost: Retry (11/20) in 1.00 second.
+2026-05-26 22:48:49,778 ERROR celery.backends.redis Connection to Redis lost: Retry (12/20) in 1.00 second.
+2026-05-26 22:48:52,825 ERROR celery.backends.redis Connection to Redis lost: Retry (13/20) in 1.00 second.
+2026-05-26 22:48:55,858 ERROR celery.backends.redis Connection to Redis lost: Retry (14/20) in 1.00 second.
+2026-05-26 22:48:58,900 ERROR celery.backends.redis Connection to Redis lost: Retry (15/20) in 1.00 second.
+2026-05-26 22:49:01,957 ERROR celery.backends.redis Connection to Redis lost: Retry (16/20) in 1.00 second.
+2026-05-26 22:49:05,003 ERROR celery.backends.redis Connection to Redis lost: Retry (17/20) in 1.00 second.
+2026-05-26 22:49:08,046 ERROR celery.backends.redis Connection to Redis lost: Retry (18/20) in 1.00 second.
+2026-05-26 22:49:11,095 ERROR celery.backends.redis Connection to Redis lost: Retry (19/20) in 1.00 second.
+2026-05-26 22:49:14,136 CRITICAL celery.backends.redis 
+Retry limit exceeded while trying to reconnect to the Celery redis result store backend. The Celery application must be restarted.
+
+[26/May/2026 22:49:41] "POST /run-screening/ HTTP/1.1" 302 0
+[26/May/2026 22:49:44] "GET /?lang=pt HTTP/1.1" 200 288045
+2026-05-26 22:49:48,556 WARNING django.request Not Found: /service-worker.js
+[26/May/2026 22:49:48] "GET /service-worker.js HTTP/1.1" 404 179
+[26/May/2026 22:50:14] "POST /portal-reports/73/pdf/ HTTP/1.1" 200 21110
+2026-05-26 22:50:17,388 WARNING django.request Not Found: /service-worker.js
+[26/May/2026 22:50:17] "GET /service-worker.js HTTP/1.1" 404 179
+2026-05-26 22:50:30,639 WARNING django.request Not Found: /service-worker.js
+[26/May/2026 22:50:30] "GET /service-worker.js HTTP/1.1" 404 179
+2026-05-26 23:04:16,871 ERROR celery.backends.redis Connection to Redis lost: Retry (0/20) now.
+2026-05-26 23:04:18,910 ERROR celery.backends.redis Connection to Redis lost: Retry (1/20) in 1.00 second.
+2026-05-26 23:04:21,957 ERROR celery.backends.redis Connection to Redis lost: Retry (2/20) in 1.00 second.
+2026-05-26 23:04:25,007 ERROR celery.backends.redis Connection to Redis lost: Retry (3/20) in 1.00 second.
+2026-05-26 23:04:28,072 ERROR celery.backends.redis Connection to Redis lost: Retry (4/20) in 1.00 second.
+2026-05-26 23:04:31,124 ERROR celery.backends.redis Connection to Redis lost: Retry (5/20) in 1.00 second.
+2026-05-26 23:04:34,163 ERROR celery.backends.redis Connection to Redis lost: Retry (6/20) in 1.00 second.
+2026-05-26 23:04:37,236 ERROR celery.backends.redis Connection to Redis lost: Retry (7/20) in 1.00 second.
+2026-05-26 23:04:40,271 ERROR celery.backends.redis Connection to Redis lost: Retry (8/20) in 1.00 second.
+2026-05-26 23:04:43,323 WARNING django.request Not Found: /service-worker.js
+2026-05-26 23:04:43,324 ERROR celery.backends.redis Connection to Redis lost: Retry (9/20) in 1.00 second.
+[26/May/2026 23:04:43] "GET /service-worker.js HTTP/1.1" 404 179
+2026-05-26 23:04:46,349 ERROR celery.backends.redis Connection to Redis lost: Retry (10/20) in 1.00 second.
+2026-05-26 23:04:49,384 ERROR celery.backends.redis Connection to Redis lost: Retry (11/20) in 1.00 second.
+2026-05-26 23:04:52,440 ERROR celery.backends.redis Connection to Redis lost: Retry (12/20) in 1.00 second.
+2026-05-26 23:04:55,482 ERROR celery.backends.redis Connection to Redis lost: Retry (13/20) in 1.00 second.
+2026-05-26 23:04:58,526 ERROR celery.backends.redis Connection to Redis lost: Retry (14/20) in 1.00 second.
+2026-05-26 23:05:01,583 ERROR celery.backends.redis Connection to Redis lost: Retry (15/20) in 1.00 second.
+2026-05-26 23:05:04,624 ERROR celery.backends.redis Connection to Redis lost: Retry (16/20) in 1.00 second.
+2026-05-26 23:05:07,674 ERROR celery.backends.redis Connection to Redis lost: Retry (17/20) in 1.00 second.
+2026-05-26 23:05:10,733 ERROR celery.backends.redis Connection to Redis lost: Retry (18/20) in 1.00 second.
+2026-05-26 23:05:13,749 ERROR celery.backends.redis Connection to Redis lost: Retry (19/20) in 1.00 second.
+2026-05-26 23:05:16,794 CRITICAL celery.backends.redis 
+Retry limit exceeded while trying to reconnect to the Celery redis result store backend. The Celery application must be restarted.
+
+[26/May/2026 23:05:29] "POST /run-screening/ HTTP/1.1" 302 0
+[26/May/2026 23:05:31] "GET /?lang=pt HTTP/1.1" 200 293160
+2026-05-26 23:05:36,375 WARNING django.request Not Found: /service-worker.js
+[26/May/2026 23:05:36] "GET /service-worker.js HTTP/1.1" 404 179
+2026-05-26 23:06:05,617 WARNING django.request Not Found: /service-worker.js
+[26/May/2026 23:06:05] "GET /service-worker.js HTTP/1.1" 404 179
+[26/May/2026 23:06:17] "POST /portal-reports/74/pdf/ HTTP/1.1" 200 26943
+2026-05-26 23:06:20,719 WARNING django.request Not Found: /service-worker.js
+[26/May/2026 23:06:20] "GET /service-worker.js HTTP/1.1" 404 179
+2026-05-26 23:06:36,277 WARNING django.request Not Found: /service-worker.js
+[26/May/2026 23:06:36] "GET /service-worker.js HTTP/1.1" 404 179

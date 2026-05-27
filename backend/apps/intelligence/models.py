@@ -59,7 +59,7 @@ class SanctionsSource(models.Model):
         WARNING = "WARNING", "Warning"
         ERROR = "ERROR", "Error"
 
-    code = models.CharField(max_length=20, choices=SourceCode.choices, unique=True)
+    code = models.CharField(max_length=20, unique=True)
     name = models.CharField(max_length=120)
     source_type = models.CharField(max_length=32, choices=SourceType.choices)
     source_format = models.CharField(max_length=16, choices=SourceFormat.choices)

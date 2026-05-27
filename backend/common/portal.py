@@ -17,8 +17,9 @@ from apps.intelligence.models import CountryRiskEntry, RiskRule, SanctionsSource
 from apps.screening.models import Alert, Client, PDFReport, ScreeningRequest
 from apps.screening.services.report_service import ReportService
 from apps.screening.services.screening_service import ScreeningService
-from apps.users.models import UserRole, UserSession
+from apps.users.models import CompanyProfile, UserRole, UserSession
 from common.utils.countries import canonical_country
+from common.utils.i18n import translate
 
 
 SUPPORTED_LOCALES = {"pt", "en"}
@@ -63,6 +64,38 @@ def _portal_redirect(request: HttpRequest, anchor: str = "") -> HttpResponse:
     if anchor:
         target = f"{target}#{anchor}"
     return redirect(target)
+
+
+def _portal_message(request: HttpRequest, key: str) -> str:
+    locale = _normalize_locale(request.POST.get("locale")) or _resolve_locale(request)
+    return translate(key, locale)
+
+
+def _portal_login_url(request: HttpRequest, next_url: str | None = None) -> str:
+    locale = _normalize_locale(request.POST.get("locale")) or _resolve_locale(request)
+    if next_url is None:
+        next_url = request.get_full_path()
+    if not next_url or next_url.startswith("/portal-admin/logout"):
+        next_url = f"/?{urlencode({'lang': locale})}"
+    return f"/admin/login/?{urlencode({'next': next_url})}"
+
+
+def _portal_user(request: HttpRequest):
+    user = getattr(request, "user", None)
+    if getattr(user, "is_authenticated", False) and getattr(user, "is_active", False):
+        return user
+    return None
+
+
+def _no_store(response: HttpResponse) -> HttpResponse:
+    response["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response["Pragma"] = "no-cache"
+    response["Expires"] = "0"
+    return response
+
+
+def _company_profile() -> CompanyProfile:
+    return CompanyProfile.current()
 
 
 def _unique_source_code(name: str, requested_code: str = "") -> str:
@@ -134,6 +167,10 @@ def _screening_site_findings(screening: ScreeningRequest | None) -> list[dict]:
 def portal_home(request: HttpRequest) -> HttpResponse:
     User = get_user_model()
     locale = _resolve_locale(request)
+    user = _portal_user(request)
+    if user is None:
+        return redirect(_portal_login_url(request, f"/?{urlencode({'lang': locale})}"))
+
     selected_screening = None
     screening_id = request.GET.get("screening") or request.session.get("portal_selected_screening_id")
     if screening_id:
@@ -164,13 +201,15 @@ def portal_home(request: HttpRequest) -> HttpResponse:
             "reports": ScreeningRequest.objects.filter(report__isnull=False).count(),
         },
         "screenings": screenings,
-        "alerts": Alert.objects.all()[:20],
+        "alerts": Alert.objects.filter(user=user)[:20],
         "sources": SanctionsSource.objects.all()[:40],
         "sync_logs": SyncJobLog.objects.select_related("source").all()[:40],
         "audit_events": AuditEvent.objects.select_related("user").all()[:40],
         "rules": RiskRule.objects.filter(enabled=True)[:40],
         "reports": PDFReport.objects.select_related("screening", "screening__client").all()[:40],
-        "demo_user": _demo_user(),
+        "demo_user": user,
+        "portal_user": user,
+        "company_profile": _company_profile(),
         "selected_screening": selected_screening,
         "selected_sites": selected_sites,
         "selected_sites_found": sum(1 for site in selected_sites if site["matched"]),
@@ -187,13 +226,13 @@ def portal_home(request: HttpRequest) -> HttpResponse:
     }
     response = render(request, "portal/dashboard.html", context)
     response.set_cookie("aml_portal_locale", locale, max_age=60 * 60 * 24 * 365, samesite="Lax")
-    return response
+    return _no_store(response)
 
 
 @csrf_protect
 def portal_admin_login(request: HttpRequest) -> HttpResponse:
     if request.method != "POST":
-        return redirect("/?lang=pt#admin-access")
+        return redirect(_portal_login_url(request))
 
     email = request.POST.get("email", "").strip().lower()
     password = request.POST.get("password", "")
@@ -203,11 +242,11 @@ def portal_admin_login(request: HttpRequest) -> HttpResponse:
         or getattr(user, "is_staff", False)
         or getattr(user, "role", "") == UserRole.ADMIN
     ):
-        messages.error(request, "Acesso administrativo inválido.")
+        messages.error(request, _portal_message(request, "admin_invalid"))
         return _portal_redirect(request, "admin-access")
 
     login(request, user)
-    messages.success(request, "Sessão administrativa iniciada.")
+    messages.success(request, _portal_message(request, "admin_login_success"))
     return _portal_redirect(request, "admin-tools")
 
 
@@ -215,8 +254,8 @@ def portal_admin_login(request: HttpRequest) -> HttpResponse:
 def portal_admin_logout(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         logout(request)
-        messages.success(request, "Sessão administrativa terminada.")
-    return _portal_redirect(request, "admin-access")
+        messages.success(request, _portal_message(request, "admin_logout_success"))
+    return redirect(_portal_login_url(request))
 
 
 @csrf_protect
@@ -238,13 +277,13 @@ def portal_create_user(request: HttpRequest) -> HttpResponse:
     if role not in UserRole.values:
         role = UserRole.ANALYST
     if not email or "@" not in email:
-        messages.error(request, "Informe um e-mail válido para criar o utilizador.")
+        messages.error(request, _portal_message(request, "user_email_required"))
         return _portal_redirect(request, "admin-tools")
     if User.objects.filter(email__iexact=email).exists():
-        messages.error(request, "Já existe um utilizador com esse e-mail.")
+        messages.error(request, _portal_message(request, "user_email_exists"))
         return _portal_redirect(request, "admin-tools")
     if len(password) < 8:
-        messages.error(request, "A senha do novo utilizador deve ter pelo menos 8 caracteres.")
+        messages.error(request, _portal_message(request, "user_password_short"))
         return _portal_redirect(request, "admin-tools")
 
     user = User.objects.create_user(
@@ -265,7 +304,7 @@ def portal_create_user(request: HttpRequest) -> HttpResponse:
         resource_id=str(user.pk),
         metadata={"email": user.email, "role": user.role},
     )
-    messages.success(request, "Utilizador criado com sucesso.")
+    messages.success(request, _portal_message(request, "user_created"))
     return _portal_redirect(request, "admin-tools")
 
 
@@ -289,7 +328,7 @@ def portal_create_search_link(request: HttpRequest) -> HttpResponse:
     if source_format not in SanctionsSource.SourceFormat.values:
         source_format = SanctionsSource.SourceFormat.HTML
     if not name:
-        messages.error(request, "Informe o nome do link de pesquisa.")
+        messages.error(request, _portal_message(request, "search_link_name_required"))
         return _portal_redirect(request, "admin-tools")
 
     validate_url = URLValidator()
@@ -298,7 +337,7 @@ def portal_create_search_link(request: HttpRequest) -> HttpResponse:
         if endpoint:
             validate_url(endpoint)
     except ValidationError:
-        messages.error(request, "Informe um URL válido para o link de pesquisa.")
+        messages.error(request, _portal_message(request, "search_link_url_invalid"))
         return _portal_redirect(request, "admin-tools")
 
     source = SanctionsSource.objects.create(
@@ -309,9 +348,13 @@ def portal_create_search_link(request: HttpRequest) -> HttpResponse:
         endpoint=endpoint,
         landing_url=landing_url,
         enabled=True,
+        health_status=SanctionsSource.HealthStatus.OK,
         sync_frequency="manual",
         notes=notes or "Link de pesquisa cadastrado pelo portal principal.",
     )
+    if not source.enabled:
+        source.enabled = True
+        source.save(update_fields=["enabled", "updated_at"])
     AuditService.record(
         action="portal_search_link_created",
         request=request,
@@ -320,8 +363,124 @@ def portal_create_search_link(request: HttpRequest) -> HttpResponse:
         resource_id=source.code,
         metadata={"name": source.name, "landing_url": source.landing_url},
     )
-    messages.success(request, "Link de pesquisa adicionado com sucesso.")
+    messages.success(request, _portal_message(request, "search_link_created"))
     return _portal_redirect(request, "admin-tools")
+
+
+@csrf_protect
+def portal_update_search_link(request: HttpRequest, source_id: int) -> HttpResponse:
+    if request.method != "POST":
+        return redirect("portal-home")
+    if not _is_portal_admin(request):
+        return HttpResponseForbidden("Administrative access required.")
+
+    source = get_object_or_404(SanctionsSource, pk=source_id)
+    name = request.POST.get("name", "").strip()
+    landing_url = request.POST.get("landing_url", "").strip()
+    endpoint = request.POST.get("endpoint", "").strip()
+    source_type = request.POST.get("source_type") or SanctionsSource.SourceType.SANCTIONS
+    source_format = request.POST.get("source_format") or SanctionsSource.SourceFormat.HTML
+    enabled = request.POST.get("enabled") == "true"
+    notes = request.POST.get("notes", "").strip()
+
+    if source_type not in SanctionsSource.SourceType.values:
+        source_type = SanctionsSource.SourceType.SANCTIONS
+    if source_format not in SanctionsSource.SourceFormat.values:
+        source_format = SanctionsSource.SourceFormat.HTML
+    if not name:
+        messages.error(request, _portal_message(request, "search_link_name_required"))
+        return _portal_redirect(request, "admin-tools")
+
+    validate_url = URLValidator()
+    try:
+        validate_url(landing_url)
+        if endpoint:
+            validate_url(endpoint)
+    except ValidationError:
+        messages.error(request, _portal_message(request, "search_link_url_invalid"))
+        return _portal_redirect(request, "admin-tools")
+
+    source.name = name
+    source.landing_url = landing_url
+    source.endpoint = endpoint or landing_url
+    source.source_type = source_type
+    source.source_format = source_format
+    source.enabled = enabled
+    source.notes = notes
+    source.save(update_fields=["name", "landing_url", "endpoint", "source_type", "source_format", "enabled", "notes", "updated_at"])
+
+    AuditService.record(
+        action="portal_search_link_updated",
+        request=request,
+        user=request.user,
+        resource_type="sanctions_source",
+        resource_id=source.code,
+        metadata={"name": source.name, "landing_url": source.landing_url, "enabled": source.enabled},
+    )
+    messages.success(request, _portal_message(request, "search_link_updated"))
+    return _portal_redirect(request, "admin-tools")
+
+
+@csrf_protect
+def portal_delete_search_link(request: HttpRequest, source_id: int) -> HttpResponse:
+    if request.method != "POST":
+        return redirect("portal-home")
+    if not _is_portal_admin(request):
+        return HttpResponseForbidden("Administrative access required.")
+
+    source = get_object_or_404(SanctionsSource, pk=source_id)
+    metadata = {"name": source.name, "code": source.code, "landing_url": source.landing_url}
+    resource_id = source.code
+    source.delete()
+    AuditService.record(
+        action="portal_search_link_deleted",
+        request=request,
+        user=request.user,
+        resource_type="sanctions_source",
+        resource_id=resource_id,
+        metadata=metadata,
+    )
+    messages.success(request, _portal_message(request, "search_link_deleted"))
+    return _portal_redirect(request, "admin-tools")
+
+
+@csrf_protect
+def portal_update_company_profile(request: HttpRequest) -> HttpResponse:
+    if request.method != "POST":
+        return redirect("portal-home")
+    if not _is_portal_admin(request):
+        return HttpResponseForbidden("Administrative access required.")
+
+    profile = _company_profile()
+    for field in (
+        "legal_name",
+        "trading_name",
+        "tax_id",
+        "registration_number",
+        "address",
+        "city",
+        "country",
+        "phone",
+        "email",
+        "website",
+        "compliance_officer",
+        "report_footer",
+    ):
+        setattr(profile, field, request.POST.get(field, "").strip())
+    if not profile.legal_name:
+        messages.error(request, _portal_message(request, "company_name_required"))
+        return _portal_redirect(request, "company-profile")
+    profile.save()
+    AuditService.record(
+        action="company_profile_updated",
+        request=request,
+        user=request.user,
+        resource_type="company_profile",
+        resource_id=str(profile.pk),
+        metadata={"legal_name": profile.legal_name, "tax_id": profile.tax_id},
+    )
+    messages.success(request, _portal_message(request, "company_profile_saved"))
+    return _portal_redirect(request, "company-profile")
 
 
 def _portal_screening_payload(request: HttpRequest) -> dict:
@@ -354,9 +513,9 @@ def portal_screening(request: HttpRequest) -> HttpResponse:
     if request.method != "POST":
         return redirect("portal-home")
 
-    actor = _demo_user()
+    actor = _portal_user(request)
     if actor is None:
-        return redirect("portal-home")
+        return redirect(_portal_login_url(request, f"/?{urlencode({'lang': _resolve_locale(request)})}#new-screening"))
 
     payload = _portal_screening_payload(request)
     screening = ScreeningService.run_screening(payload, user=actor, request=request)
@@ -367,6 +526,9 @@ def portal_screening(request: HttpRequest) -> HttpResponse:
 
 @csrf_protect
 def portal_report_pdf(request: HttpRequest, screening_id: int) -> HttpResponse:
+    if _portal_user(request) is None:
+        return redirect(_portal_login_url(request, f"/?{urlencode({'screening': screening_id, 'lang': _resolve_locale(request)})}"))
+
     if request.method not in {"GET", "POST"}:
         return redirect(f"/?{urlencode({'screening': screening_id, 'lang': _resolve_locale(request)})}")
 
@@ -383,16 +545,20 @@ def portal_report_pdf(request: HttpRequest, screening_id: int) -> HttpResponse:
     ) or _resolve_locale(request)
     report = ReportService.build_pdf(screening, language=language, request=request)
     report.file.open("rb")
+    download = (request.POST.get("download") or request.GET.get("download")) == "1"
     return FileResponse(
         report.file,
         content_type="application/pdf",
-        as_attachment=False,
+        as_attachment=download,
         filename=f"screening-{screening.pk}-{language}.pdf",
     )
 
 
 @csrf_protect
 def portal_report_csv(request: HttpRequest, screening_id: int) -> HttpResponse:
+    if _portal_user(request) is None:
+        return redirect(_portal_login_url(request, f"/?{urlencode({'screening': screening_id, 'lang': _resolve_locale(request)})}"))
+
     if request.method != "POST":
         return redirect(f"/?{urlencode({'screening': screening_id, 'lang': _resolve_locale(request)})}")
 

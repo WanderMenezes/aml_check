@@ -1,6 +1,52 @@
+import re
+
+from django import forms
 from django.contrib import admin
 
 from apps.intelligence.models import Country, CountryRiskEntry, RiskRule, SanctionsSource, SyncJobLog, WatchlistEntry
+
+
+def _unique_source_code(name: str, current_id=None) -> str:
+    base = re.sub(r"[^A-Z0-9]", "", (name or "SOURCE").upper())[:16] or "SOURCE"
+    candidate = base[:20]
+    suffix = 2
+    queryset = SanctionsSource.objects.all()
+    if current_id:
+        queryset = queryset.exclude(pk=current_id)
+    while queryset.filter(code=candidate).exists():
+        suffix_text = str(suffix)
+        candidate = f"{base[:20 - len(suffix_text)]}{suffix_text}"
+        suffix += 1
+    return candidate
+
+
+class SanctionsSourceAdminForm(forms.ModelForm):
+    code = forms.CharField(
+        required=False,
+        max_length=20,
+        help_text="Opcional. Se deixar vazio, o sistema gera um codigo unico a partir do nome.",
+    )
+
+    class Meta:
+        model = SanctionsSource
+        fields = "__all__"
+
+    def clean_code(self):
+        raw_code = (self.cleaned_data.get("code") or "").strip().upper()
+        return re.sub(r"[^A-Z0-9]", "", raw_code)[:20]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        code = cleaned_data.get("code")
+        if not code:
+            code = _unique_source_code(self.cleaned_data.get("name") or "", self.instance.pk)
+        queryset = SanctionsSource.objects.filter(code=code)
+        if self.instance.pk:
+            queryset = queryset.exclude(pk=self.instance.pk)
+        if queryset.exists():
+            code = _unique_source_code(code, self.instance.pk)
+        cleaned_data["code"] = code
+        return cleaned_data
 
 
 @admin.register(Country)
@@ -12,8 +58,10 @@ class CountryAdmin(admin.ModelAdmin):
 
 @admin.register(SanctionsSource)
 class SanctionsSourceAdmin(admin.ModelAdmin):
+    form = SanctionsSourceAdminForm
     list_display = ("code", "name", "source_type", "source_format", "enabled", "last_synced_at", "health_status")
     list_filter = ("source_type", "source_format", "enabled", "health_status")
+    search_fields = ("code", "name", "landing_url", "endpoint")
 
 
 @admin.register(WatchlistEntry)

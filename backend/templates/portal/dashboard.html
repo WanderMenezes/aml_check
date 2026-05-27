@@ -7,28 +7,33 @@
     <link rel="icon" href="data:," />
     <style>
       :root {
-        --bg: #07111a;
-        --panel: #0d1822;
-        --panel-strong: #08141f;
-        --panel-soft: rgba(255, 255, 255, 0.045);
-        --line: rgba(255, 255, 255, 0.1);
-        --text: #f5fbff;
-        --muted: #93a4b4;
-        --teal: #0fb7a7;
-        --gold: #dab66b;
-        --danger: #de5b6d;
-        --warning: #e7a63a;
-        --success: #23b26d;
+        --bg: #f3f6fa;
+        --panel: #ffffff;
+        --panel-strong: #132238;
+        --panel-soft: #ffffff;
+        --line: #d8e1eb;
+        --text: #162033;
+        --muted: #64748b;
+        --teal: #0f766e;
+        --gold: #b8892f;
+        --danger: #c2414f;
+        --warning: #b7791f;
+        --success: #16815d;
+        --sidebar: #0b1726;
+        --sidebar-soft: #111f32;
+        --surface: #f8fafc;
       }
 
       * { box-sizing: border-box; }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
         font-family: "Segoe UI", Arial, sans-serif;
-        background:
-          radial-gradient(circle at 18% 0%, rgba(15, 183, 167, 0.16), transparent 30%),
-          linear-gradient(180deg, #07111a 0%, #0a1620 100%);
+        background: var(--bg);
         color: var(--text);
       }
 
@@ -121,7 +126,35 @@
         font-size: 13px;
       }
 
+      .sidebar-session {
+        display: grid;
+        gap: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.055);
+        padding: 12px;
+      }
+
+      .sidebar-session strong {
+        color: #f8fafc;
+        font-size: 14px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      .sidebar-session span {
+        color: #aebbd0;
+        font-size: 12px;
+      }
+
+      .sidebar form {
+        margin: 0;
+      }
+
       .lang-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         min-width: 42px;
         border: 1px solid transparent;
         border-radius: 8px;
@@ -391,8 +424,84 @@
         background: rgba(222, 91, 109, 0.12);
       }
 
+      .processing-feedback {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        margin-top: 16px;
+        border: 1px solid rgba(15, 118, 110, 0.28);
+        border-radius: 8px;
+        background: #ecfdf8;
+        color: #1f2937;
+        padding: 14px;
+      }
+
+      .processing-feedback strong {
+        display: block;
+        color: #0f766e;
+        font-size: 14px;
+      }
+
+      .processing-feedback p {
+        margin: 4px 0 0;
+        color: #475467;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .processing-spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(15, 118, 110, 0.2);
+        border-top-color: #0f766e;
+        border-radius: 999px;
+        animation: portal-spin .75s linear infinite;
+      }
+
+      button.is-loading {
+        cursor: wait;
+        opacity: .82;
+      }
+
+      @keyframes portal-spin {
+        to { transform: rotate(360deg); }
+      }
+
       .admin-tools {
         scroll-margin-top: 18px;
+      }
+
+      .admin-hero {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: end;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel-soft);
+        padding: 22px;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.12);
+      }
+
+      .admin-hero h2 {
+        margin: 10px 0 6px;
+        font-size: 26px;
+      }
+
+      .admin-hero p {
+        max-width: 760px;
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .admin-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(118px, 1fr));
+        gap: 10px;
+        min-width: 420px;
       }
 
       .admin-toolbar {
@@ -402,9 +511,114 @@
         margin-bottom: 16px;
       }
 
+      .admin-stat {
+        min-height: 88px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        padding: 14px;
+      }
+
+      .admin-stat strong {
+        display: block;
+        color: var(--text);
+        font-size: 25px;
+      }
+
+      .admin-stat span {
+        display: block;
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
       .admin-form {
         display: grid;
+        gap: 16px;
+      }
+
+      .form-section {
+        display: grid;
         gap: 14px;
+        border-top: 1px solid var(--line);
+        padding-top: 16px;
+      }
+
+      .form-section:first-of-type {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .field-note {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .admin-list-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 18px 0 10px;
+      }
+
+      .admin-list-header h3 {
+        margin: 0;
+        font-size: 15px;
+      }
+
+      .admin-list {
+        gap: 10px;
+      }
+
+      .admin-list .item {
+        display: grid;
+        gap: 8px;
+      }
+
+      .item-main {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .item-main strong {
+        overflow-wrap: anywhere;
+      }
+
+      .badge-row,
+      .source-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+
+      .mini-badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        border: 1px solid #d9e2ec;
+        border-radius: 999px;
+        background: #ffffff;
+        color: #475467;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .mini-badge.success {
+        border-color: rgba(22, 129, 93, 0.28);
+        background: #eafaf1;
+        color: #166534;
+      }
+
+      .mini-badge.warning {
+        border-color: rgba(183, 121, 31, 0.32);
+        background: #fff7db;
+        color: #8a5a00;
       }
 
       .source-link {
@@ -412,6 +626,89 @@
         margin-top: 6px;
         color: var(--teal);
         overflow-wrap: anywhere;
+      }
+
+      .research-links-table {
+        min-width: 980px;
+      }
+
+      .research-links-table td {
+        max-width: 280px;
+      }
+
+      .research-link-cell {
+        display: grid;
+        gap: 6px;
+      }
+
+      .research-link-cell a {
+        color: var(--teal);
+        font-weight: 700;
+        overflow-wrap: anywhere;
+      }
+
+      .research-link-cell span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .row-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .edit-link-panel {
+        min-width: 260px;
+      }
+
+      .edit-link-panel summary {
+        display: inline-flex;
+        align-items: center;
+        min-height: 34px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1f2937;
+        padding: 8px 10px;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .edit-link-panel[open] summary {
+        border-color: #0f766e;
+        background: #ecfdf8;
+        color: #0f766e;
+      }
+
+      .edit-link-form {
+        display: grid;
+        gap: 10px;
+        margin-top: 10px;
+        border: 1px solid #d9e2ec;
+        border-radius: 8px;
+        background: #f8fafc;
+        padding: 12px;
+      }
+
+      .edit-link-form label {
+        margin-bottom: 5px;
+      }
+
+      .edit-link-form input,
+      .edit-link-form textarea,
+      .edit-link-form select {
+        padding: 9px 10px;
+      }
+
+      .danger-button {
+        min-height: 34px;
+        border-color: rgba(194, 65, 79, 0.32);
+        background: #fff1f2;
+        color: #9f1239;
+        padding: 8px 10px;
+        font-size: 12px;
       }
 
       .table-wrap {
@@ -487,6 +784,526 @@
         font-size: 12px;
       }
 
+      .history-summary {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .history-toolbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(220px, 340px);
+        gap: 14px;
+        align-items: end;
+        margin-bottom: 16px;
+      }
+
+      .history-toolbar p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .history-search label {
+        margin-bottom: 6px;
+      }
+
+      .history-subject strong {
+        display: block;
+        color: #101828;
+        font-size: 14px;
+      }
+
+      .history-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .history-meta span {
+        border-radius: 6px;
+        background: #eef2f6;
+        color: #475467;
+        padding: 4px 7px;
+        font-size: 12px;
+      }
+
+      .history-empty-filter {
+        display: none;
+      }
+
+      .portal-footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 20px;
+        border-top: 1px solid #d8e1eb;
+        color: #667085;
+        padding: 18px 2px 2px;
+        font-size: 13px;
+      }
+
+      .portal-footer strong {
+        color: #344054;
+      }
+
+      .result-card {
+        grid-column: 1 / -1;
+        order: -1;
+      }
+
+      .result-summary {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .summary-tile {
+        min-height: 92px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        padding: 14px;
+      }
+
+      .summary-tile span {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+      }
+
+      .summary-tile strong:not(.risk) {
+        color: #101828;
+        font-size: 26px;
+        line-height: 1;
+      }
+
+      .result-block {
+        display: grid;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .compact-title {
+        margin-bottom: 0;
+      }
+
+      .compact-title h2 {
+        font-size: 18px;
+      }
+
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        border-top: 1px solid #e6edf5;
+        padding: 12px;
+      }
+
+      .list > .pagination {
+        border-top: 0;
+        padding: 2px 0 0;
+      }
+
+      .pagination button {
+        width: 34px;
+        height: 34px;
+        min-height: 34px;
+        display: inline-grid;
+        place-items: center;
+        padding: 0;
+        font-size: 16px;
+        font-weight: 800;
+      }
+
+      .pagination button:disabled {
+        cursor: not-allowed;
+        opacity: .45;
+      }
+
+      .pagination-status {
+        min-width: 82px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .shell {
+        grid-template-columns: 292px minmax(0, 1fr);
+        gap: 22px;
+        padding: 22px;
+      }
+
+      .sidebar {
+        background: linear-gradient(180deg, var(--sidebar) 0%, #07111a 100%);
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 18px 46px rgba(15, 23, 42, 0.18);
+      }
+
+      .brand-lockup {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #f8fafc;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: .04em;
+      }
+
+      .brand h1,
+      .sidebar .nav-link,
+      .sidebar .metric-link,
+      .sidebar .lang-button {
+        color: #f8fafc;
+      }
+
+      .brand p,
+      .sidebar-heading,
+      .sidebar .nav-link span:last-child,
+      .sidebar .metric-link span:last-child,
+      .language-control {
+        color: #aebbd0;
+      }
+
+      .sidebar .pill {
+        border-color: rgba(184, 137, 47, 0.4);
+        background: rgba(184, 137, 47, 0.14);
+        color: #f5d390;
+      }
+
+      .nav-link,
+      .metric-link,
+      .language-control {
+        background: rgba(255, 255, 255, 0.055);
+        border-color: rgba(255, 255, 255, 0.09);
+      }
+
+      .nav-link:hover,
+      .metric-link:hover {
+        border-color: rgba(255, 255, 255, 0.24);
+        background: rgba(255, 255, 255, 0.11);
+      }
+
+      .content {
+        max-width: 1480px;
+        padding-right: 2px;
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 1.6fr) minmax(320px, .8fr);
+      }
+
+      .card,
+      .panel,
+      .stat,
+      .notice,
+      .report-strip {
+        border-color: var(--line);
+        background: var(--panel);
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+        backdrop-filter: none;
+      }
+
+      .card,
+      .panel {
+        overflow: hidden;
+      }
+
+      .hero-panel {
+        min-height: 194px;
+        padding: 26px 28px;
+      }
+
+      .hero-panel h1 {
+        color: #101828;
+        font-size: 34px;
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      .hero-panel h2,
+      .section-title h2 {
+        color: #1d2939;
+        letter-spacing: 0;
+      }
+
+      .hero-panel p {
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .session-meta {
+        margin: -2px 0 10px;
+        color: #667085;
+        font-size: 13px;
+        overflow-wrap: anywhere;
+      }
+
+      .pill {
+        border-radius: 6px;
+        border-color: rgba(15, 118, 110, 0.24);
+        background: #ecfdf8;
+        color: #0f766e;
+        font-weight: 800;
+        letter-spacing: .1em;
+      }
+
+      .link-btn,
+      .action-btn,
+      button {
+        border-color: #cbd5e1;
+        background: #ffffff;
+        color: #1f2937;
+        box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+      }
+
+      .link-btn:hover,
+      .action-btn:hover,
+      button:hover {
+        border-color: #94a3b8;
+        background: #f8fafc;
+      }
+
+      button.primary,
+      .action-btn.primary {
+        background: #0f766e;
+        color: #ffffff;
+      }
+
+      button.primary:hover,
+      .action-btn.primary:hover {
+        background: #115e59;
+      }
+
+      button.gold,
+      .action-btn.gold {
+        border-color: rgba(184, 137, 47, 0.38);
+        background: #fff8e6;
+        color: #7c5308;
+      }
+
+      .stats {
+        grid-template-columns: repeat(6, minmax(126px, 1fr));
+      }
+
+      .stat {
+        min-height: 108px;
+        border-top: 3px solid #0f766e;
+        background: #ffffff;
+      }
+
+      .stat small {
+        color: #667085;
+        font-size: 12px;
+      }
+
+      .stat strong {
+        color: #101828;
+        font-size: 31px;
+      }
+
+      .notice {
+        border-color: #99d7cc;
+        background: #f0fdfa;
+      }
+
+      .item {
+        background: var(--surface);
+        border-color: #dde5ee;
+        color: #1f2937;
+        box-shadow: none;
+      }
+
+      .mini .item {
+        min-height: 96px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .item strong,
+      .report-strip strong {
+        color: #182230;
+      }
+
+      label,
+      .mode-help,
+      .muted {
+        color: #667085;
+      }
+
+      input,
+      textarea,
+      select {
+        border-color: #cfd8e3;
+        background: #ffffff;
+        color: #111827;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: 3px solid rgba(15, 118, 110, 0.16);
+        border-color: #0f766e;
+      }
+
+      .search-mode label {
+        background: #f8fafc;
+        color: #1f2937;
+      }
+
+      .search-mode label:has(input:checked) {
+        border-color: #0f766e;
+        background: #ecfdf8;
+        box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.15);
+      }
+
+      .table-wrap {
+        border-color: #d9e2ec;
+        background: #ffffff;
+      }
+
+      table {
+        min-width: 900px;
+      }
+
+      th {
+        background: #f8fafc;
+        color: #475467;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+      }
+
+      td {
+        border-bottom-color: #e6edf5;
+        color: #1f2937;
+      }
+
+      tbody tr:hover td {
+        background: #fbfdff;
+      }
+
+      .risk {
+        border-radius: 6px;
+        letter-spacing: 0;
+      }
+
+      .LOW {
+        background: #eafaf1;
+        color: #166534;
+      }
+
+      .MEDIUM {
+        background: #fff7db;
+        color: #8a5a00;
+      }
+
+      .HIGH {
+        background: #fff0e5;
+        color: #9a3412;
+      }
+
+      .CRITICAL {
+        background: #ffe8ec;
+        color: #9f1239;
+      }
+
+      .source-link {
+        color: #0f766e;
+        font-weight: 700;
+      }
+
+      .view-panel {
+        display: none !important;
+      }
+
+      .view-panel.is-active {
+        display: block !important;
+      }
+
+      .grid.view-panel.is-active {
+        display: grid !important;
+      }
+
+      .single-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .content > .grid.view-panel {
+        margin-top: 0;
+      }
+
+      .sidebar .lang-button {
+        min-height: 34px;
+        border-color: transparent;
+        background: transparent;
+        color: #f8fafc;
+        box-shadow: none;
+      }
+
+      .sidebar .pill {
+        border-color: rgba(184, 137, 47, 0.4);
+        background: rgba(184, 137, 47, 0.14);
+        color: #f5d390;
+      }
+
+      .sidebar .lang-button.is-active {
+        background: #22c3b6;
+        color: #07111a;
+      }
+
+      .sidebar button.metric-link {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.055);
+        color: #f8fafc;
+        border-color: rgba(255, 255, 255, 0.09);
+        box-shadow: none;
+        justify-content: space-between;
+      }
+
+      .sidebar button.metric-link:hover {
+        background: rgba(255, 255, 255, 0.11);
+        border-color: rgba(255, 255, 255, 0.24);
+      }
+
+      .sidebar button.metric-link.danger {
+        border-color: rgba(248, 113, 113, 0.26);
+        background: rgba(190, 18, 60, 0.14);
+        color: #ffe4e6;
+      }
+
+      .sidebar .nav-link.is-active,
+      .sidebar .metric-link.is-active {
+        border-color: rgba(34, 195, 182, 0.52);
+        background: rgba(34, 195, 182, 0.16);
+      }
+
       @media (max-width: 1180px) {
         .shell { grid-template-columns: 1fr; }
         .sidebar {
@@ -503,8 +1320,12 @@
         }
         .hero,
         .grid,
+        .admin-hero,
         .notice {
           grid-template-columns: 1fr;
+        }
+        .admin-summary {
+          min-width: 0;
         }
         .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       }
@@ -513,7 +1334,11 @@
         .shell { padding: 14px; }
         .sidebar-section,
         .stats,
+        .result-summary,
+        .history-summary,
+        .history-toolbar,
         .admin-toolbar,
+        .admin-summary,
         .search-mode,
         .form-grid,
         .mini,
@@ -530,66 +1355,75 @@
     <div class="shell">
       <aside class="sidebar" aria-label="Portal navigation">
         <div class="brand">
-          <span class="pill" data-i18n="portal">Portal</span>
-          <h1>AML Check Enterprise</h1>
+          <div class="brand-lockup">
+            <span class="brand-mark">AML</span>
+            <div>
+              <span class="pill" data-i18n="portal">Portal</span>
+              <h1>AML Check Enterprise</h1>
+            </div>
+          </div>
           <p data-i18n="sidebarIntro">Operação local de screening, auditoria e relatórios.</p>
         </div>
 
         <div class="language-control" aria-label="Idioma" data-i18n-aria-label="language">
           <span data-i18n="language">Idioma</span>
-          <button type="button" class="lang-button" data-lang-option="pt" aria-pressed="true">PT</button>
-          <button type="button" class="lang-button" data-lang-option="en" aria-pressed="false">EN</button>
+          <a class="lang-button" href="?lang=pt" data-lang-option="pt" aria-pressed="true">PT</a>
+          <a class="lang-button" href="?lang=en" data-lang-option="en" aria-pressed="false">EN</a>
         </div>
 
         <nav class="sidebar-section" aria-label="Portal sections">
           <p class="sidebar-heading" data-i18n="operations">Operações</p>
-          <a class="nav-link" href="#new-screening"><span data-i18n="newScreening">Novo Screening</span><span>01</span></a>
-          <a class="nav-link" href="#screening-history"><span data-i18n="screeningHistory">Histórico</span><span>02</span></a>
-          <a class="nav-link" href="#reports-section"><span data-i18n="reports">Relatórios</span><span>{{ totals.reports }}</span></a>
-          <a class="nav-link" href="#audit-section"><span data-i18n="audit">Auditoria</span><span>04</span></a>
+          <a class="nav-link" href="#overview-view" data-view-target="overview-view"><span data-i18n="overview">Visão geral</span><span>00</span></a>
+          <a class="nav-link" href="#new-screening" data-view-target="new-screening"><span data-i18n="newScreening">Nova análise</span><span>01</span></a>
+          <a class="nav-link" href="#screening-history" data-view-target="screening-history"><span data-i18n="screeningHistory">Histórico</span><span>02</span></a>
+          <a class="nav-link" href="#reports-section" data-view-target="reports-section"><span data-i18n="reports">Relatórios</span><span>{{ totals.reports }}</span></a>
+          <a class="nav-link" href="#audit-section" data-view-target="audit-section"><span data-i18n="audit">Auditoria</span><span>04</span></a>
         </nav>
 
-        <nav class="sidebar-section" aria-label="User options">
-          <p class="sidebar-heading" data-i18n="userOptions">Opções de utilizador</p>
-          {% if portal_admin %}
-            <a class="metric-link" href="#admin-tools"><span data-i18n="manageUsers">Gerir utilizadores</span><span>{{ user_totals.total }}</span></a>
-            <a class="metric-link" href="#admin-tools"><span data-i18n="researchLinks">Links de pesquisa</span><span>{{ source_totals.total }}</span></a>
-            <form method="post" action="{% url 'portal-admin-logout' %}">
-              {% csrf_token %}
-              <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
-              <button type="submit" class="metric-link" data-i18n="logout">Sair</button>
-            </form>
-          {% else %}
-            <a class="metric-link" href="#admin-access"><span data-i18n="adminAccess">Acesso administrativo</span><span>login</span></a>
-            <a class="metric-link" href="#screening-history"><span data-i18n="totalScreenings">Total Screenings</span><span>{{ totals.screenings }}</span></a>
-            <a class="metric-link" href="#reports-section"><span data-i18n="reports">Relatórios</span><span>{{ totals.reports }}</span></a>
-          {% endif %}
-          <a class="metric-link" href="#audit-section"><span data-i18n="audit">Auditoria</span><span>04</span></a>
-          <a class="metric-link" href="#new-screening"><span data-i18n="newScreening">Novo Screening</span><span>01</span></a>
-        </nav>
+        <div class="sidebar-session" aria-label="Sessão atual" data-i18n-aria-label="currentSession">
+          <p class="sidebar-heading" data-i18n="currentSession">Sessão atual</p>
+          <strong>{{ portal_user.email|default:"-" }}</strong>
+          <span>{{ portal_user.get_role_display|default:portal_user.role }}</span>
+          <form method="post" action="{% url 'portal-admin-logout' %}">
+            {% csrf_token %}
+            <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
+            <button type="submit" class="metric-link danger"><span data-i18n="logout">Sair</span><span>login</span></button>
+          </form>
+        </div>
+
+        {% if portal_admin %}
+          <nav class="sidebar-section" aria-label="Admin tools">
+            <p class="sidebar-heading" data-i18n="adminTools">Administração</p>
+            <a class="metric-link" href="#admin-tools" data-view-target="admin-tools"><span data-i18n="manageUsers">Gerir utilizadores</span><span>{{ user_totals.total }}</span></a>
+            <a class="metric-link" href="#admin-tools" data-view-target="admin-tools"><span data-i18n="researchLinks">Links de pesquisa</span><span>{{ source_totals.total }}</span></a>
+            <a class="metric-link" href="#company-profile" data-view-target="company-profile"><span data-i18n="companyProfile">Dados da empresa</span><span>PDF</span></a>
+          </nav>
+        {% endif %}
       </aside>
 
       <main class="content">
+        <div class="view-panel is-active" id="overview-view" data-view="overview-view">
         <section class="hero">
           <div class="card hero-panel">
             <div>
-              <span class="pill" data-i18n="complianceConsole">Compliance Console</span>
+              <span class="pill" data-i18n="complianceConsole">Console de Conformidade</span>
               <h1>AML Check Enterprise</h1>
-              <p data-i18n="heroText">Portal operacional de AML / KYC com screening local, watchlists internacionais, auditoria, alertas e gestão de risco.</p>
+              <p data-i18n="heroText">Painel operacional para análise AML/KYC, listas de sanções, trilha de auditoria e relatórios regulatórios.</p>
             </div>
             <div class="links">
-              <a class="link-btn" href="#new-screening" data-i18n="newScreening">Novo Screening</a>
-              <a class="link-btn" href="#screening-history" data-i18n="screeningHistory">Histórico</a>
-              <a class="link-btn" href="#reports-section" data-i18n="reports">Relatórios</a>
-              <a class="link-btn" href="/health/">Health</a>
+              <a class="link-btn" href="#new-screening" data-view-target="new-screening" data-i18n="newScreening">Nova análise</a>
+              <a class="link-btn" href="#screening-history" data-view-target="screening-history" data-i18n="screeningHistory">Histórico</a>
+              <a class="link-btn" href="#reports-section" data-view-target="reports-section" data-i18n="reports">Relatórios</a>
+              <a class="link-btn" href="/health/" data-i18n="systemHealth">Estado</a>
             </div>
           </div>
 
           <div class="panel hero-panel">
             <div>
-              <span class="pill" data-i18n="demoUser">Demo User</span>
-              <h2>{{ demo_user.email|default:"Sem utilizador" }}</h2>
-              <p class="muted" data-i18n="demoUserText">A aplicação já foi inicializada com um utilizador administrativo e um screening demo.</p>
+              <span class="pill" data-i18n="operator">Sessão</span>
+              <h2 data-i18n="operatorReady">Operador autorizado</h2>
+              <div class="session-meta">{{ demo_user.email|default:"Sem utilizador" }}</div>
+              <p class="muted" data-i18n="operatorText">Ambiente local com trilha de auditoria ativa, fontes de risco monitorizadas e relatórios prontos para revisão.</p>
             </div>
             <div class="mini">
               <div class="item">
@@ -604,30 +1438,8 @@
           </div>
         </section>
 
-        {% if selected_screening %}
-          <section class="notice">
-            <div>
-              <span class="pill" data-i18n="screeningReady">Screening pronto</span>
-              <strong>#{{ selected_screening.pk }} &middot; {{ selected_screening.metadata.query_term|default:selected_screening.client.full_name|default:selected_screening.client.company_name|default:selected_screening.client.country }}</strong>
-              <p data-i18n="screeningReadyText">Os dados da pesquisa estão prontos para consulta e geração de relatório.</p>
-            </div>
-            <div class="actions">
-              <form method="post" action="{% url 'portal-report-pdf' selected_screening.pk %}" target="_blank">
-                {% csrf_token %}
-                <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
-                <button type="submit" class="primary" data-i18n="generatePdf">Gerar PDF</button>
-              </form>
-              <form method="post" action="{% url 'portal-report-csv' selected_screening.pk %}" target="_blank">
-                {% csrf_token %}
-                <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
-                <button type="submit" class="gold" data-i18n="exportCsv">Exportar CSV</button>
-              </form>
-            </div>
-          </section>
-        {% endif %}
-
         <section class="stats">
-          <div class="stat"><small data-i18n="totalScreenings">Total Screenings</small><strong>{{ totals.screenings }}</strong></div>
+          <div class="stat"><small data-i18n="totalScreenings">Total de análises</small><strong>{{ totals.screenings }}</strong></div>
           <div class="stat"><small data-i18n="critical">Critical</small><strong>{{ totals.critical }}</strong></div>
           <div class="stat"><small data-i18n="pending">Pending</small><strong>{{ totals.pending }}</strong></div>
           <div class="stat"><small data-i18n="review">Review</small><strong>{{ totals.review }}</strong></div>
@@ -642,9 +1454,31 @@
             {% endfor %}
           </div>
         {% endif %}
+        </div>
 
         {% if portal_admin %}
-          <section class="grid admin-tools" id="admin-tools">
+          <section class="grid admin-tools view-panel" id="admin-tools" data-view="admin-tools">
+            <div class="admin-hero">
+              <div>
+                <span class="pill" data-i18n="adminTools">Administracao</span>
+                <h2 data-i18n="adminWorkspaceTitle">Centro administrativo</h2>
+                <p data-i18n="adminWorkspaceIntro">Gira acessos, sessoes e fontes externas usadas na pesquisa AML/KYC. Mantenha URLs e endpoints atualizados para melhorar a qualidade das decisoes.</p>
+              </div>
+              <div class="admin-summary" aria-label="Resumo administrativo">
+                <div class="admin-stat">
+                  <strong>{{ user_totals.total }}</strong>
+                  <span data-i18n="users">Utilizadores</span>
+                </div>
+                <div class="admin-stat">
+                  <strong>{{ user_totals.sessions }}</strong>
+                  <span data-i18n="activeSessions">Sessoes ativas</span>
+                </div>
+                <div class="admin-stat">
+                  <strong>{{ source_totals.enabled }}/{{ source_totals.total }}</strong>
+                  <span data-i18n="enabledSources">Fontes ativas</span>
+                </div>
+              </div>
+            </div>
             <div class="card">
               <div class="section-title">
                 <div>
@@ -669,22 +1503,24 @@
               <form class="admin-form" method="post" action="{% url 'portal-create-user' %}">
                 {% csrf_token %}
                 <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
-                <div class="form-grid">
+                <div class="form-section form-grid">
                   <div>
                     <label data-i18n="email">E-mail</label>
-                    <input type="email" name="email" placeholder="analista@empresa.local" required />
+                    <input type="email" name="email" placeholder="analista@empresa.local" autocomplete="email" required />
+                    <p class="field-note" data-i18n="emailAccessNote">Usado para login, alertas e trilha de auditoria.</p>
                   </div>
                   <div>
                     <label data-i18n="temporaryPassword">Senha temporária</label>
-                    <input type="password" name="password" minlength="8" required />
+                    <input type="password" name="password" minlength="8" autocomplete="new-password" required />
+                    <p class="field-note" data-i18n="temporaryPasswordNote">Minimo de 8 caracteres; deve ser trocada apos o primeiro acesso.</p>
                   </div>
                   <div>
                     <label data-i18n="firstName">Nome</label>
-                    <input name="first_name" />
+                    <input name="first_name" autocomplete="given-name" />
                   </div>
                   <div>
                     <label data-i18n="lastName">Apelido</label>
-                    <input name="last_name" />
+                    <input name="last_name" autocomplete="family-name" />
                   </div>
                   <div>
                     <label data-i18n="role">Perfil</label>
@@ -696,7 +1532,7 @@
                   </div>
                   <div>
                     <label data-i18n="phone">Telefone</label>
-                    <input name="phone" />
+                    <input name="phone" autocomplete="tel" />
                   </div>
                 </div>
                 <input type="hidden" name="preferred_language" data-locale-field value="{{ locale|default:'pt' }}" />
@@ -704,11 +1540,25 @@
                   <button type="submit" class="primary" data-i18n="saveUser">Guardar utilizador</button>
                 </div>
               </form>
-              <div class="list" style="margin-top:16px;">
+              <div class="admin-list-header">
+                <h3 data-i18n="recentUsers">Utilizadores recentes</h3>
+                <span class="mini-badge">{{ recent_users|length }}</span>
+              </div>
+              <div class="list admin-list" data-paginated data-page-size="6">
                 {% for account in recent_users %}
-                  <div class="item">
-                    <strong>{{ account.email }}</strong>
-                    <div class="muted" style="margin-top:6px;">{{ account.role }} &middot; {{ account.is_active|yesno:"Ativo,Inativo" }}</div>
+                  <div class="item" data-page-row>
+                    <div class="item-main">
+                      <strong>{{ account.email }}</strong>
+                      {% if account.is_active %}
+                        <span class="mini-badge success" data-i18n="enabled">Ativo</span>
+                      {% else %}
+                        <span class="mini-badge warning" data-i18n="disabled">Inativo</span>
+                      {% endif %}
+                    </div>
+                    <div class="badge-row">
+                      <span class="mini-badge">{{ account.role }}</span>
+                      <span class="mini-badge">{{ account.preferred_language|upper }}</span>
+                    </div>
                   </div>
                 {% empty %}
                   <div class="item muted" data-i18n="noUsers">Sem utilizadores para mostrar.</div>
@@ -726,19 +1576,22 @@
               <form class="admin-form" method="post" action="{% url 'portal-create-search-link' %}">
                 {% csrf_token %}
                 <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
-                <div>
+                <input type="hidden" name="enabled" value="true" />
+                <div class="form-section">
                   <label data-i18n="sourceName">Nome da fonte</label>
                   <input name="name" placeholder="Registo comercial nacional" required />
+                  <p class="field-note" data-i18n="sourceNameNote">Use um nome reconhecivel pela equipa de compliance.</p>
                 </div>
                 <div>
                   <label data-i18n="searchUrl">URL de pesquisa</label>
-                  <input type="url" name="landing_url" placeholder="https://exemplo.gov/pesquisa" required />
+                  <input type="url" name="landing_url" placeholder="https://exemplo.gov/pesquisa" autocomplete="url" required />
+                  <p class="field-note" data-i18n="searchUrlNote">A busca consulta este link e tambem o endpoint tecnico, quando existir.</p>
                 </div>
                 <div>
                   <label data-i18n="endpointUrl">Endpoint técnico</label>
-                  <input type="url" name="endpoint" placeholder="https://exemplo.gov/dados.csv" />
+                  <input type="url" name="endpoint" placeholder="https://exemplo.gov/dados.csv" autocomplete="url" />
                 </div>
-                <div class="form-grid">
+                <div class="form-section form-grid">
                   <div>
                     <label data-i18n="sourceType">Tipo</label>
                     <select name="source_type">
@@ -764,32 +1617,211 @@
                   <button type="submit" class="primary" data-i18n="saveResearchLink">Guardar link</button>
                 </div>
               </form>
-              <div class="list" style="margin-top:16px;">
-                {% for source in research_links %}
-                  <div class="item">
-                    <strong>{{ source.code }} &middot; {{ source.name }}</strong>
-                    <span class="muted">{{ source.source_type }} &middot; {{ source.source_format }}</span>
-                    {% if source.landing_url %}
-                      <a class="source-link" href="{{ source.landing_url }}" target="_blank" rel="noreferrer">{{ source.landing_url }}</a>
-                    {% endif %}
-                  </div>
-                {% empty %}
-                  <div class="item muted" data-i18n="noResearchLinks">Sem links cadastrados.</div>
-                {% endfor %}
+              <div class="admin-list-header">
+                <h3 data-i18n="registeredSources">Fontes registadas</h3>
+                <span class="mini-badge success">{{ source_totals.enabled }}/{{ source_totals.total }}</span>
               </div>
+              <div class="table-wrap" data-paginated data-page-size="8">
+                <table class="research-links-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="sourceCode">Codigo</th>
+                      <th data-i18n="sourceName">Nome da fonte</th>
+                      <th data-i18n="sourceType">Tipo</th>
+                      <th data-i18n="sourceFormat">Formato</th>
+                      <th data-i18n="status">Estado</th>
+                      <th data-i18n="searchUrl">URL de pesquisa</th>
+                      <th data-i18n="endpointUrl">Endpoint tecnico</th>
+                      <th data-i18n="actions">Acoes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for source in research_links %}
+                      <tr data-page-row>
+                        <td><span class="mini-badge">{{ source.code }}</span></td>
+                        <td>
+                          <strong>{{ source.name }}</strong>
+                          {% if source.notes %}
+                            <div class="muted" style="margin-top:6px;">{{ source.notes|truncatechars:90 }}</div>
+                          {% endif %}
+                        </td>
+                        <td>{{ source.source_type }}</td>
+                        <td>{{ source.source_format }}</td>
+                        <td>
+                          {% if source.enabled %}
+                            <span class="mini-badge success" data-i18n="enabled">Ativo</span>
+                          {% else %}
+                            <span class="mini-badge warning" data-i18n="disabled">Inativo</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          <div class="research-link-cell">
+                            {% if source.landing_url %}
+                              <a href="{{ source.landing_url }}" target="_blank" rel="noreferrer">{{ source.landing_url }}</a>
+                            {% else %}
+                              <span data-i18n="noUrl">Sem URL</span>
+                            {% endif %}
+                          </div>
+                        </td>
+                        <td>
+                          <div class="research-link-cell">
+                            {% if source.endpoint %}
+                              <a href="{{ source.endpoint }}" target="_blank" rel="noreferrer">{{ source.endpoint }}</a>
+                            {% else %}
+                              <span data-i18n="noEndpoint">Sem endpoint</span>
+                            {% endif %}
+                          </div>
+                        </td>
+                        <td>
+                          <div class="row-actions">
+                            <details class="edit-link-panel">
+                              <summary data-i18n="edit">Editar</summary>
+                              <form class="edit-link-form" method="post" action="{% url 'portal-update-search-link' source.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
+                                <div>
+                                  <label data-i18n="sourceName">Nome da fonte</label>
+                                  <input name="name" value="{{ source.name }}" required />
+                                </div>
+                                <div>
+                                  <label data-i18n="searchUrl">URL de pesquisa</label>
+                                  <input type="url" name="landing_url" value="{{ source.landing_url }}" required />
+                                </div>
+                                <div>
+                                  <label data-i18n="endpointUrl">Endpoint tecnico</label>
+                                  <input type="url" name="endpoint" value="{{ source.endpoint }}" />
+                                </div>
+                                <div class="form-grid">
+                                  <div>
+                                    <label data-i18n="sourceType">Tipo</label>
+                                    <select name="source_type">
+                                      {% for value, label in source_types %}
+                                        <option value="{{ value }}" {% if source.source_type == value %}selected{% endif %}>{{ label }}</option>
+                                      {% endfor %}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label data-i18n="sourceFormat">Formato</label>
+                                    <select name="source_format">
+                                      {% for value, label in source_formats %}
+                                        <option value="{{ value }}" {% if source.source_format == value %}selected{% endif %}>{{ label }}</option>
+                                      {% endfor %}
+                                    </select>
+                                  </div>
+                                </div>
+                                <div>
+                                  <label data-i18n="status">Estado</label>
+                                  <select name="enabled">
+                                    <option value="true" {% if source.enabled %}selected{% endif %} data-i18n="enabled">Ativo</option>
+                                    <option value="false" {% if not source.enabled %}selected{% endif %} data-i18n="disabled">Inativo</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label data-i18n="notes">Observacoes</label>
+                                  <textarea name="notes">{{ source.notes }}</textarea>
+                                </div>
+                                <div class="actions">
+                                  <button type="submit" class="primary" data-i18n="saveChanges">Guardar alteracoes</button>
+                                </div>
+                              </form>
+                            </details>
+                            <form method="post" action="{% url 'portal-delete-search-link' source.id %}" data-confirm-delete>
+                              {% csrf_token %}
+                              <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
+                              <button type="submit" class="danger-button" data-i18n="delete">Apagar</button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                    {% empty %}
+                      <tr>
+                        <td class="muted" colspan="8" data-i18n="noResearchLinks">Sem links cadastrados.</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section class="grid single-grid view-panel" id="company-profile" data-view="company-profile">
+            <div class="card">
+              <div class="section-title">
+                <div>
+                  <span class="pill" data-i18n="companyProfile">Dados da empresa</span>
+                  <h2 data-i18n="companyProfileTitle">Registo institucional</h2>
+                </div>
+              </div>
+              <form class="admin-form" method="post" action="{% url 'portal-company-profile' %}">
+                {% csrf_token %}
+                <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
+                <div class="form-grid">
+                  <div>
+                    <label data-i18n="legalName">Razão social</label>
+                    <input name="legal_name" value="{{ company_profile.legal_name }}" required />
+                  </div>
+                  <div>
+                    <label data-i18n="tradingName">Nome comercial</label>
+                    <input name="trading_name" value="{{ company_profile.trading_name }}" />
+                  </div>
+                  <div>
+                    <label data-i18n="taxId">NIF / Identificação fiscal</label>
+                    <input name="tax_id" value="{{ company_profile.tax_id }}" />
+                  </div>
+                  <div>
+                    <label data-i18n="registrationNumber">Registo comercial</label>
+                    <input name="registration_number" value="{{ company_profile.registration_number }}" />
+                  </div>
+                  <div>
+                    <label data-i18n="companyEmail">E-mail institucional</label>
+                    <input type="email" name="email" value="{{ company_profile.email }}" />
+                  </div>
+                  <div>
+                    <label data-i18n="companyPhone">Telefone</label>
+                    <input name="phone" value="{{ company_profile.phone }}" />
+                  </div>
+                  <div>
+                    <label data-i18n="companyWebsite">Website</label>
+                    <input type="url" name="website" value="{{ company_profile.website }}" />
+                  </div>
+                  <div>
+                    <label data-i18n="complianceOfficer">Responsável de compliance</label>
+                    <input name="compliance_officer" value="{{ company_profile.compliance_officer }}" />
+                  </div>
+                  <div>
+                    <label data-i18n="companyCity">Cidade</label>
+                    <input name="city" value="{{ company_profile.city }}" />
+                  </div>
+                  <div>
+                    <label data-i18n="companyCountry">País</label>
+                    <input name="country" value="{{ company_profile.country }}" />
+                  </div>
+                </div>
+                <div>
+                  <label data-i18n="companyAddress">Endereço</label>
+                  <input name="address" value="{{ company_profile.address }}" />
+                </div>
+                <div>
+                  <label data-i18n="reportFooter">Texto do rodapé do relatório</label>
+                  <input name="report_footer" value="{{ company_profile.report_footer }}" />
+                </div>
+                <div class="actions">
+                  <button type="submit" class="primary" data-i18n="saveCompanyProfile">Guardar dados da empresa</button>
+                </div>
+              </form>
             </div>
           </section>
         {% endif %}
 
-        <section class="grid" id="new-screening">
+        <section class="grid view-panel" id="new-screening" data-view="new-screening">
           <div class="card">
             <div class="section-title">
               <div>
-                <span class="pill" data-i18n="runScreening">Run Screening</span>
-                <h2 data-i18n="newScreening">Novo Screening</h2>
+                <span class="pill" data-i18n="runScreening">Executar screening</span>
+                <h2 data-i18n="newScreening">Nova análise</h2>
               </div>
             </div>
-            <form method="post" action="/run-screening/">
+            <form method="post" action="/run-screening/" data-screening-form>
               {% csrf_token %}
               <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
               <div class="search-mode" role="radiogroup" aria-label="Tipo de pesquisa" data-i18n-aria-label="searchType">
@@ -799,22 +1831,154 @@
               </div>
               <p class="mode-help" data-mode-help data-i18n="personModeHelp">Pesquise pessoas pelo nome completo. Não use apelidos, números ou termos soltos.</p>
               <div class="form-grid">
-                <div data-mode-field="person"><label data-i18n="fullName">Nome completo</label><input name="full_name" value="Mohamed Aly" data-required-mode="person" /></div>
-                <div data-mode-field="company"><label data-i18n="company">Empresa</label><input name="company_name" value="Aly Trading Ltd" data-required-mode="company" /></div>
-                <div data-mode-field="country"><label data-i18n="country">País</label><input name="country" value="South Africa" data-required-mode="country" /></div>
-                <div data-mode-field="person"><label data-i18n="nationality">Nacionalidade</label><input name="nationality" value="Egypt" /></div>
-                <div data-mode-field="person"><label data-i18n="passport">Passaporte</label><input name="passport_number" value="XA123456" /></div>
-                <div data-mode-field="person"><label data-i18n="nationalId">BI / ID</label><input name="national_id" value="BI-998877" /></div>
+                <div data-mode-field="person"><label data-i18n="fullName">Nome completo</label><input name="full_name" placeholder="Nome legal completo" data-i18n-placeholder="fullNamePlaceholder" data-required-mode="person" /></div>
+                <div data-mode-field="company"><label data-i18n="company">Empresa</label><input name="company_name" placeholder="Razão social ou nome comercial" data-i18n-placeholder="companyPlaceholder" data-required-mode="company" /></div>
+                <div data-mode-field="country"><label data-i18n="country">País</label><input name="country" placeholder="Nome oficial do país" data-i18n-placeholder="countryPlaceholder" data-required-mode="country" /></div>
+                <div data-mode-field="person"><label data-i18n="nationality">Nacionalidade</label><input name="nationality" placeholder="Nacionalidade declarada" data-i18n-placeholder="nationalityPlaceholder" /></div>
+                <div data-mode-field="person"><label data-i18n="passport">Passaporte</label><input name="passport_number" placeholder="Número do passaporte" data-i18n-placeholder="passportPlaceholder" /></div>
+                <div data-mode-field="person"><label data-i18n="nationalId">BI / ID</label><input name="national_id" placeholder="Documento nacional" data-i18n-placeholder="nationalIdPlaceholder" /></div>
               </div>
               <div style="margin-top:14px;">
                 <label data-i18n="notes">Observações</label>
-                <textarea name="notes" data-i18n-value="defaultNotes">Screening iniciado pelo portal web local.</textarea>
+                <textarea name="notes" placeholder="Contexto adicional para a equipa de compliance" data-i18n-placeholder="notesPlaceholder"></textarea>
+              </div>
+              <div class="processing-feedback is-hidden" data-processing-feedback role="status" aria-live="polite" aria-atomic="true">
+                <span class="processing-spinner" aria-hidden="true"></span>
+                <div>
+                  <strong data-i18n="processingSearch">Pesquisa em processamento</strong>
+                  <p data-processing-message data-i18n="processingSearchDetail">A pesquisa está a ser processada. Aguarde enquanto consultamos as fontes AML/KYC.</p>
+                </div>
               </div>
               <div style="margin-top:18px; display:flex; justify-content:flex-end;">
-                <button type="submit" class="primary" data-i18n="runScreening">Run Screening</button>
+                <button type="submit" class="primary" data-screening-submit data-i18n="runScreening">Executar screening</button>
               </div>
             </form>
           </div>
+
+          {% if selected_screening %}
+            <div class="card result-card">
+              <div class="section-title">
+                <div>
+                  <span class="pill" data-i18n="screeningReady">Screening pronto</span>
+                  <h2>#{{ selected_screening.pk }} &middot; {{ selected_screening.metadata.query_term|default:selected_screening.client.full_name|default:selected_screening.client.company_name|default:selected_screening.client.country }}</h2>
+                </div>
+                <div class="inline-actions">
+                  <form method="post" action="{% url 'portal-report-pdf' selected_screening.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
+                    <input type="hidden" name="download" value="1" />
+                    <button type="submit" class="primary" data-i18n="generatePdf">Gerar PDF</button>
+                  </form>
+                  <form method="post" action="{% url 'portal-report-csv' selected_screening.pk %}" target="_blank">
+                    {% csrf_token %}
+                    <input type="hidden" name="locale" data-locale-field value="{{ locale|default:'pt' }}" />
+                    <button type="submit" class="gold" data-i18n="exportCsv">Exportar CSV</button>
+                  </form>
+                </div>
+              </div>
+
+              <div class="result-summary">
+                <div class="summary-tile">
+                  <span data-i18n="resultsObtained">Resultados obtidos</span>
+                  <strong>{{ selected_screening.matches.count }}</strong>
+                </div>
+                <div class="summary-tile">
+                  <span data-i18n="sitesChecked">Sites/fontes consultados</span>
+                  <strong>{{ selected_sites|length }}</strong>
+                </div>
+                <div class="summary-tile">
+                  <span data-i18n="sitesFound">Sites com resultado</span>
+                  <strong>{{ selected_sites_found }}</strong>
+                </div>
+                <div class="summary-tile">
+                  <span data-i18n="risk">Risco</span>
+                  <strong class="risk {{ selected_screening.risk_level }}" data-risk-value="{{ selected_screening.risk_level }}">{{ selected_screening.risk_level }}</strong>
+                </div>
+                <div class="summary-tile">
+                  <span data-i18n="status">Estado</span>
+                  <strong data-status-value="{{ selected_screening.status }}">{{ selected_screening.status }}</strong>
+                </div>
+              </div>
+
+              <div class="result-block">
+                <div class="section-title compact-title">
+                  <div>
+                    <span class="pill" data-i18n="foundSites">Sites consultados</span>
+                    <h2 data-i18n="foundSitesTitle">Fontes consultadas na pesquisa</h2>
+                  </div>
+                </div>
+                <div class="table-wrap" data-paginated data-page-size="5">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th data-i18n="source">Fonte</th>
+                        <th data-i18n="siteUrl">Site / URL</th>
+                        <th data-i18n="status">Estado</th>
+                        <th data-i18n="results">Resultados</th>
+                        <th data-i18n="score">Pontuação</th>
+                        <th data-i18n="details">Detalhes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for site in selected_sites %}
+                        <tr data-page-row>
+                          <td><strong>{{ site.source_name }}</strong><br /><span class="muted">{{ site.source_code }}</span></td>
+                          <td>
+                            {% if site.url %}
+                              <a class="source-link" href="{{ site.url }}" target="_blank" rel="noreferrer">{{ site.url }}</a>
+                            {% else %}
+                              <span class="muted">-</span>
+                            {% endif %}
+                          </td>
+                          <td><span class="risk {% if site.matched %}LOW{% else %}MEDIUM{% endif %}" data-external-status-value="{{ site.status }}">{{ site.status }}</span></td>
+                          <td>{{ site.count }}</td>
+                          <td>{{ site.max_score }}%</td>
+                          <td class="muted">{{ site.title }}{% if site.snippet %}<br />{{ site.snippet }}{% endif %}</td>
+                        </tr>
+                      {% empty %}
+                        <tr><td colspan="6" class="muted" data-i18n="noSitesFound">Nenhum site ou fonte foi consultado para esta pesquisa.</td></tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="result-block">
+                <div class="section-title compact-title">
+                  <div>
+                    <span class="pill" data-i18n="matches">Ocorrências</span>
+                    <h2 data-i18n="foundResultsTitle">Resultados encontrados</h2>
+                  </div>
+                </div>
+                <div class="table-wrap" data-paginated data-page-size="6">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th data-i18n="source">Fonte</th>
+                        <th data-i18n="matchedName">Nome encontrado</th>
+                        <th data-i18n="score">Pontuação</th>
+                        <th data-i18n="risk">Risco</th>
+                        <th data-i18n="remarks">Observações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for match in selected_screening.matches.all %}
+                        <tr data-page-row>
+                          <td>{{ match.source_code }}</td>
+                          <td><strong>{{ match.matched_name }}</strong>{% if match.nationality %}<br /><span class="muted">{{ match.nationality }}</span>{% endif %}</td>
+                          <td>{{ match.score }}%</td>
+                          <td><span class="risk {{ match.risk_level }}" data-risk-value="{{ match.risk_level }}">{{ match.risk_level }}</span></td>
+                          <td class="muted" data-recommendation-value="{{ selected_screening.risk_level }}">{{ match.remarks|default:selected_screening.recommendation }}</td>
+                        </tr>
+                      {% empty %}
+                        <tr><td colspan="5" class="muted" data-i18n="noMatchesForSearch">Nenhuma ocorrência foi encontrada para esta pesquisa.</td></tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          {% endif %}
 
           <div class="card">
             <div class="section-title">
@@ -823,9 +1987,9 @@
                 <h2 data-i18n="recentAlerts">Alertas Recentes</h2>
               </div>
             </div>
-            <div class="list">
+            <div class="list" data-paginated data-page-size="6">
               {% for alert in alerts %}
-                <div class="item">
+                <div class="item" data-page-row>
                   <strong>{{ alert.title }}</strong>
                   <div class="muted" style="margin-top:6px;">{{ alert.message }}</div>
                 </div>
@@ -836,19 +2000,45 @@
           </div>
         </section>
 
-        <section class="grid" id="screening-history">
+        <section class="grid single-grid view-panel" id="screening-history" data-view="screening-history">
           <div class="card">
-            <div class="section-title">
+            <div class="history-toolbar">
               <div>
                 <span class="pill" data-i18n="screeningHistory">Screening History</span>
                 <h2 data-i18n="latestScreenings">Últimos Screenings</h2>
+                <p data-i18n="historyIntro">Consulte as pesquisas recentes, compare risco, estado e ocorrências, e exporte relatórios quando necessário.</p>
+              </div>
+              <div class="history-search">
+                <label for="history-search" data-i18n="search">Pesquisar</label>
+                <input id="history-search" type="search" data-history-search placeholder="Nome, país, empresa ou risco" data-i18n-placeholder="historySearchPlaceholder" />
               </div>
             </div>
+
+            <div class="history-summary">
+              <div class="summary-tile">
+                <span data-i18n="totalScreenings">Total de análises</span>
+                <strong>{{ totals.screenings }}</strong>
+              </div>
+              <div class="summary-tile">
+                <span data-i18n="critical">Críticos</span>
+                <strong>{{ totals.critical }}</strong>
+              </div>
+              <div class="summary-tile">
+                <span data-i18n="review">Em revisão</span>
+                <strong>{{ totals.review }}</strong>
+              </div>
+              <div class="summary-tile">
+                <span data-i18n="reports">Relatórios</span>
+                <strong>{{ totals.reports }}</strong>
+              </div>
+            </div>
+
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
                     <th data-i18n="client">Cliente</th>
+                    <th data-i18n="searchType">Tipo de pesquisa</th>
                     <th data-i18n="risk">Risco</th>
                     <th data-i18n="status">Status</th>
                     <th data-i18n="matches">Matches</th>
@@ -858,15 +2048,21 @@
                 </thead>
                 <tbody>
                   {% for screening in screenings %}
-                    <tr>
-                      <td>
-                        <strong>{{ screening.metadata.query_term|default:screening.client.full_name|default:screening.client.company_name|default:screening.client.country }}</strong><br />
-                        <span class="muted">{{ screening.metadata.search_type|default:"person" }} &middot; {{ screening.client.company_name|default:screening.client.country|default:"-" }}</span>
+                    <tr data-history-row>
+                      <td class="history-subject">
+                        <strong>{{ screening.metadata.query_term|default:screening.client.full_name|default:screening.client.company_name|default:screening.client.country }}</strong>
+                        <div class="history-meta">
+                          <span>#{{ screening.pk }}</span>
+                          <span>{{ screening.created_at|date:"Y-m-d H:i" }}</span>
+                          {% if screening.client.company_name %}<span>{{ screening.client.company_name }}</span>{% endif %}
+                          {% if screening.client.country %}<span>{{ screening.client.country }}</span>{% endif %}
+                        </div>
                       </td>
-                      <td><span class="risk {{ screening.risk_level }}">{{ screening.risk_level }}</span></td>
-                      <td>{{ screening.status }}</td>
+                      <td>{{ screening.metadata.search_type|default:"person" }}</td>
+                      <td><span class="risk {{ screening.risk_level }}" data-risk-value="{{ screening.risk_level }}">{{ screening.risk_level }}</span></td>
+                      <td data-status-value="{{ screening.status }}">{{ screening.status }}</td>
                       <td>{{ screening.matches.count }}</td>
-                      <td class="muted">{{ screening.recommendation }}</td>
+                      <td class="muted" data-recommendation-value="{{ screening.risk_level }}">{{ screening.recommendation }}</td>
                       <td>
                         <div class="inline-actions">
                           <form method="post" action="{% url 'portal-report-pdf' screening.pk %}" target="_blank">
@@ -883,23 +2079,29 @@
                       </td>
                     </tr>
                   {% empty %}
-                    <tr><td colspan="6" class="muted" data-i18n="noScreenings">Nenhum screening disponível.</td></tr>
+                    <tr><td colspan="7" class="muted" data-i18n="noScreenings">Nenhum screening disponível.</td></tr>
                   {% endfor %}
+                  <tr class="history-empty-filter">
+                    <td colspan="7" class="muted" data-i18n="noHistoryResults">Nenhuma análise corresponde ao filtro informado.</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          <div class="card" id="reports-section">
+        </section>
+
+        <section class="grid single-grid view-panel" id="reports-section" data-view="reports-section">
+          <div class="card">
             <div class="section-title">
               <div>
                 <span class="pill" data-i18n="reports">Reports</span>
                 <h2 data-i18n="recentReports">Relatórios recentes</h2>
               </div>
             </div>
-            <div class="list">
+            <div class="list" data-paginated data-page-size="8">
               {% for report in reports %}
-                <div class="report-strip">
+                <div class="report-strip" data-page-row>
                   <div>
                     <strong>#{{ report.screening.pk }} &middot; {{ report.screening.metadata.query_term|default:report.screening.client.full_name|default:report.screening.client.company_name|default:report.screening.client.country }}</strong>
                     <span class="muted">{{ report.created_at }} &middot; {{ report.language|upper }}</span>
@@ -917,7 +2119,7 @@
           </div>
         </section>
 
-        <section class="grid">
+        <section class="grid view-panel" id="audit-section" data-view="audit-section">
           <div class="card">
             <div class="section-title">
               <div>
@@ -925,32 +2127,32 @@
                 <h2 data-i18n="integrationsAndRules">Integrações e Regras</h2>
               </div>
             </div>
-            <div class="list">
+            <div class="list" data-paginated data-page-size="8">
               {% for source in sources %}
-                <div class="item">
+                <div class="item" data-page-row>
                   <strong>{{ source.code }} &middot; {{ source.name }}</strong>
-                  <div class="muted" style="margin-top:6px;">{{ source.health_status }}{% if source.last_synced_at %} &middot; {{ source.last_synced_at }}{% endif %}</div>
+                  <div class="muted" style="margin-top:6px;"><span data-health-value="{{ source.health_status }}">{{ source.health_status }}</span>{% if source.last_synced_at %} &middot; {{ source.last_synced_at }}{% endif %}</div>
                 </div>
               {% endfor %}
               {% for rule in rules %}
-                <div class="item">
+                <div class="item" data-page-row>
                   <strong>{{ rule.name }}</strong>
-                  <div class="muted" style="margin-top:6px;">{{ rule.condition_type }} &middot; {{ rule.risk_level }}</div>
+                  <div class="muted" style="margin-top:6px;"><span data-rule-condition-value="{{ rule.condition_type }}">{{ rule.condition_type }}</span> &middot; <span data-risk-value="{{ rule.risk_level }}">{{ rule.risk_level }}</span></div>
                 </div>
               {% endfor %}
             </div>
           </div>
 
-          <div class="card" id="audit-section">
+          <div class="card">
             <div class="section-title">
               <div>
                 <span class="pill" data-i18n="audit">Audit</span>
                 <h2 data-i18n="auditEvents">Eventos de Auditoria</h2>
               </div>
             </div>
-            <div class="list">
+            <div class="list" data-paginated data-page-size="8">
               {% for event in audit_events %}
-                <div class="item">
+                <div class="item" data-page-row>
                   <strong>{{ event.action }}</strong>
                   <div class="muted" style="margin-top:6px;">{{ event.user.email|default:"system" }} &middot; {{ event.created_at }}</div>
                 </div>
@@ -961,7 +2163,7 @@
           </div>
         </section>
 
-        <section class="grid">
+        <section class="grid view-panel" data-view="audit-section">
           <div class="card">
             <div class="section-title">
               <div>
@@ -969,10 +2171,10 @@
                 <h2 data-i18n="latestSyncs">Últimas Sincronizações</h2>
               </div>
             </div>
-            <div class="list">
+            <div class="list" data-paginated data-page-size="8">
               {% for log in sync_logs %}
-                <div class="item">
-                  <strong>{{ log.source.code|default:"N/A" }} &middot; {{ log.status }}</strong>
+                <div class="item" data-page-row>
+                  <strong>{{ log.source.code|default:"N/A" }} &middot; <span data-sync-status-value="{{ log.status }}">{{ log.status }}</span></strong>
                   <div class="muted" style="margin-top:6px;">Itens processados: {{ log.items_processed }} &middot; {{ log.started_at }}</div>
                 </div>
               {% empty %}
@@ -980,37 +2182,12 @@
               {% endfor %}
             </div>
           </div>
-          <div class="card">
-            <div class="section-title">
-              <div>
-                <span class="pill" data-i18n="screeningData">Dados da pesquisa</span>
-                <h2 data-i18n="screeningDataTitle">Resumo exportável</h2>
-              </div>
-            </div>
-            {% if selected_screening %}
-              <div class="list">
-                <div class="item">
-                  <strong>{{ selected_screening.metadata.query_term|default:selected_screening.client.full_name|default:selected_screening.client.company_name|default:selected_screening.client.country }}</strong>
-                  <div class="muted" style="margin-top:6px;">{{ selected_screening.metadata.search_type|default:"person" }} &middot; {{ selected_screening.risk_level }} &middot; {{ selected_screening.status }} &middot; {{ selected_screening.matches.count }} matches</div>
-                </div>
-                <div class="item">
-                  <strong data-i18n="recommendation">Recomendação</strong>
-                  <div class="muted" style="margin-top:6px;">{{ selected_screening.recommendation }}</div>
-                </div>
-                {% for match in selected_screening.matches.all %}
-                  <div class="item">
-                    <strong>{{ match.source_code }} &middot; {{ match.matched_name }}</strong>
-                    <div class="muted" style="margin-top:6px;">{{ match.score }}% &middot; {{ match.risk_level }}{% if match.remarks %} &middot; {{ match.remarks }}{% endif %}</div>
-                  </div>
-                {% empty %}
-                  <div class="item muted" data-i18n="noMatchesForSearch">Nenhum match foi encontrado para esta pesquisa.</div>
-                {% endfor %}
-              </div>
-            {% else %}
-              <div class="item muted" data-i18n="selectScreeningForReport">Execute ou selecione um screening para gerar relatórios da pesquisa.</div>
-            {% endif %}
-          </div>
         </section>
+
+        <footer class="portal-footer">
+          <span><strong>{{ company_profile.trading_name|default:company_profile.legal_name }}</strong> &middot; AML Check Enterprise</span>
+          <span>{{ company_profile.email|default:"" }}{% if company_profile.website %} &middot; {{ company_profile.website }}{% endif %}</span>
+        </footer>
       </main>
     </div>
 
@@ -1020,31 +2197,41 @@
           pt: {
             title: "AML Check Enterprise",
             portal: "Portal",
-            sidebarIntro: "Operação local de screening, auditoria e relatórios.",
+            sidebarIntro: "Console bancário para screening AML/KYC, auditoria e relatórios.",
             operations: "Operações",
-            complianceConsole: "Compliance Console",
+            overview: "Visão geral",
+            complianceConsole: "Console de Conformidade",
             language: "Idioma",
             userOptions: "Opções de utilizador",
+            currentSession: "Sessão atual",
             manageUsers: "Gerir utilizadores",
             researchLinks: "Links de pesquisa",
             userSessions: "Sessões",
             usersApi: "API de utilizadores",
             logout: "Sair",
-            heroText: "Portal operacional de AML / KYC com screening local, watchlists internacionais, auditoria, alertas e gestão de risco.",
-            demoUser: "Demo User",
-            demoUserText: "A aplicação já foi inicializada com um utilizador administrativo e um screening demo.",
+            adminAccess: "Acesso administrativo",
+            systemHealth: "Estado",
+            heroText: "Painel operacional para análise AML/KYC, listas de sanções, trilha de auditoria e relatórios regulatórios.",
+            operator: "Sessão",
+            operatorReady: "Operador autorizado",
+            operatorText: "Ambiente local com trilha de auditoria ativa, fontes de risco monitorizadas e relatórios prontos para revisão.",
+            demoUser: "Sessão",
+            demoUserText: "Ambiente local com trilha de auditoria ativa, fontes de risco monitorizadas e relatórios prontos para revisão.",
             reportsGenerated: "Relatórios gerados",
             visibleIntegrations: "Integrações visíveis",
             screeningReady: "Screening pronto",
             screeningReadyText: "Os dados da pesquisa estão prontos para consulta e geração de relatório.",
-            totalScreenings: "Total de screenings",
+            totalScreenings: "Total de análises",
             critical: "Críticos",
             pending: "Pendentes",
             review: "Em revisão",
             countryRisk: "Risco de país",
             reports: "Relatórios",
-            runScreening: "Executar Screening",
-            newScreening: "Novo Screening",
+            runScreening: "Executar screening",
+            processingSearch: "Pesquisa em processamento",
+            processingSearchDetail: "A pesquisa de {type} está a ser processada. Aguarde enquanto consultamos as fontes AML/KYC.",
+            processingButton: "A processar...",
+            newScreening: "Nova análise",
             searchType: "Tipo de pesquisa",
             personMode: "Pessoa",
             countryMode: "País",
@@ -1059,19 +2246,47 @@
             passport: "Passaporte",
             nationalId: "BI / ID",
             notes: "Observações",
-            defaultNotes: "Screening iniciado pelo portal web local.",
+            fullNamePlaceholder: "Nome legal completo",
+            companyPlaceholder: "Razão social ou nome comercial",
+            countryPlaceholder: "Nome oficial do país",
+            nationalityPlaceholder: "Nacionalidade declarada",
+            passportPlaceholder: "Número do passaporte",
+            nationalIdPlaceholder: "Documento nacional",
+            notesPlaceholder: "Contexto adicional para a equipa de compliance",
+            defaultNotes: "",
             alerts: "Alertas",
             recentAlerts: "Alertas Recentes",
             noAlerts: "Sem alertas por agora.",
             screeningHistory: "Histórico",
-            latestScreenings: "Últimos Screenings",
+            latestScreenings: "Últimas análises",
+            historyIntro: "Consulte as pesquisas recentes, compare risco, estado e ocorrências, e exporte relatórios quando necessário.",
+            historySearchPlaceholder: "Nome, país, empresa ou risco",
             client: "Cliente",
             risk: "Risco",
-            status: "Status",
-            matches: "Matches",
+            status: "Estado",
+            matches: "Ocorrências",
             recommendation: "Recomendação",
             noScreenings: "Nenhum screening disponível.",
+            noHistoryResults: "Nenhuma análise corresponde ao filtro informado.",
             adminTools: "Administração",
+            adminWorkspaceTitle: "Centro administrativo",
+            adminWorkspaceIntro: "Gira acessos, sessoes e fontes externas usadas na pesquisa AML/KYC. Mantenha URLs e endpoints atualizados para melhorar a qualidade das decisoes.",
+            enabledSources: "Fontes ativas",
+            companyProfile: "Dados da empresa",
+            companyProfileTitle: "Registo institucional",
+            legalName: "Razão social",
+            tradingName: "Nome comercial",
+            taxId: "NIF / Identificação fiscal",
+            registrationNumber: "Registo comercial",
+            companyEmail: "E-mail institucional",
+            companyPhone: "Telefone",
+            companyWebsite: "Website",
+            companyAddress: "Endereço",
+            companyCity: "Cidade",
+            companyCountry: "País",
+            complianceOfficer: "Responsável de compliance",
+            reportFooter: "Texto do rodapé do relatório",
+            saveCompanyProfile: "Guardar dados da empresa",
             createUser: "Adicionar utilizador",
             users: "Utilizadores",
             activeSessions: "Sessões ativas",
@@ -1081,16 +2296,32 @@
             lastName: "Apelido",
             role: "Perfil",
             phone: "Telefone",
+            emailAccessNote: "Usado para login, alertas e trilha de auditoria.",
+            temporaryPasswordNote: "Minimo de 8 caracteres; deve ser trocada apos o primeiro acesso.",
             saveUser: "Guardar utilizador",
+            recentUsers: "Utilizadores recentes",
             noUsers: "Sem utilizadores para mostrar.",
             addResearchLink: "Adicionar fonte externa",
+            sourceCode: "Codigo",
             sourceName: "Nome da fonte",
+            sourceNameNote: "Use um nome reconhecivel pela equipa de compliance.",
             searchUrl: "URL de pesquisa",
+            searchUrlNote: "A busca consulta este link e tambem o endpoint tecnico, quando existir.",
             endpointUrl: "Endpoint técnico",
             sourceType: "Tipo",
             sourceFormat: "Formato",
             saveResearchLink: "Guardar link",
+            registeredSources: "Fontes registadas",
             noResearchLinks: "Sem links cadastrados.",
+            noUrl: "Sem URL",
+            noEndpoint: "Sem endpoint",
+            actions: "Acoes",
+            edit: "Editar",
+            delete: "Apagar",
+            saveChanges: "Guardar alteracoes",
+            confirmDeleteLink: "Tem certeza que deseja apagar este link de pesquisa?",
+            enabled: "Ativo",
+            disabled: "Inativo",
             sources: "Fontes",
             integrationsAndRules: "Integrações e Regras",
             syncLogs: "Logs de Sync",
@@ -1109,36 +2340,85 @@
             screeningData: "Dados da pesquisa",
             screeningDataTitle: "Resumo exportável",
             selectScreeningForReport: "Execute ou selecione um screening para gerar relatórios da pesquisa.",
-            noMatchesForSearch: "Nenhum match foi encontrado para esta pesquisa."
+            noMatchesForSearch: "Nenhuma ocorrência foi encontrada para esta pesquisa.",
+            resultsObtained: "Resultados obtidos",
+            sitesChecked: "Sites/fontes consultados",
+            sitesFound: "Sites com resultado",
+            foundSites: "Sites consultados",
+            foundSitesTitle: "Fontes consultadas na pesquisa",
+            foundResultsTitle: "Resultados encontrados",
+            source: "Fonte",
+            siteUrl: "Site / URL",
+            results: "Resultados",
+            score: "Pontuação",
+            details: "Detalhes",
+            matchedName: "Nome encontrado",
+            remarks: "Observações",
+            noSitesFound: "Nenhum site ou fonte foi consultado para esta pesquisa.",
+            previousPage: "Página anterior",
+            nextPage: "Próxima página"
+            ,
+            risk_LOW: "Baixo",
+            risk_MEDIUM: "Médio",
+            risk_HIGH: "Alto",
+            risk_CRITICAL: "Crítico",
+            status_PENDING: "Pendente",
+            status_COMPLETED: "Concluído",
+            status_REVIEW: "Em revisão",
+            health_OK: "OK",
+            health_WARNING: "Aviso",
+            health_ERROR: "Erro",
+            sync_RUNNING: "Em execução",
+            sync_SUCCESS: "Sucesso",
+            sync_FAILED: "Falhou",
+            external_FOUND: "Encontrado",
+            external_NO_MATCH: "Sem resultado",
+            condition_SOURCE_MATCH: "Correspondência por fonte",
+            condition_COUNTRY_MATCH: "Correspondência por país",
+            condition_SCORE_THRESHOLD: "Limite de pontuação",
+            recommendation_LOW: "Prosseguir com diligência padrão.",
+            recommendation_MEDIUM: "Prosseguir com diligência reforçada e revisão documental.",
+            recommendation_HIGH: "Encaminhar ao responsável de conformidade antes da integração.",
+            recommendation_CRITICAL: "Não integrar. Bloquear e investigar imediatamente."
           },
           en: {
             title: "AML Check Enterprise",
             portal: "Portal",
-            sidebarIntro: "Local screening, audit and reporting operations.",
+            sidebarIntro: "Banking console for AML/KYC screening, audit and reporting.",
             operations: "Operations",
+            overview: "Overview",
             complianceConsole: "Compliance Console",
             language: "Language",
             userOptions: "User options",
+            currentSession: "Current session",
             manageUsers: "Manage users",
             researchLinks: "Research links",
             userSessions: "Sessions",
             usersApi: "Users API",
             logout: "Logout",
-            heroText: "Operational AML / KYC portal with local screening, international watchlists, audit trails, alerts and risk management.",
-            demoUser: "Demo User",
-            demoUserText: "The application has already been initialized with an administrative user and a demo screening.",
+            adminAccess: "Administrative access",
+            systemHealth: "Status",
+            heroText: "Operational workspace for AML/KYC review, sanctions lists, audit trails and regulatory reporting.",
+            operator: "Session",
+            operatorReady: "Authorized operator",
+            operatorText: "Local environment with active audit trail, monitored risk sources and reports ready for review.",
+            demoUser: "Session",
+            demoUserText: "Local environment with active audit trail, monitored risk sources and reports ready for review.",
             reportsGenerated: "Generated reports",
             visibleIntegrations: "Visible integrations",
             screeningReady: "Screening ready",
             screeningReadyText: "Search data is ready for review and report generation.",
-            totalScreenings: "Total screenings",
+            totalScreenings: "Total reviews",
             critical: "Critical",
             pending: "Pending",
             review: "Review",
             countryRisk: "Country risk",
             reports: "Reports",
-            runScreening: "Run Screening",
-            newScreening: "New Screening",
+            runScreening: "Run screening",
+            processingSearch: "Search in progress",
+            processingSearchDetail: "The {type} search is being processed. Please wait while we check the AML/KYC sources.",
+            processingButton: "Processing...",
+            newScreening: "New review",
             searchType: "Search type",
             personMode: "Person",
             countryMode: "Country",
@@ -1153,19 +2433,47 @@
             passport: "Passport",
             nationalId: "National ID",
             notes: "Notes",
-            defaultNotes: "Screening started from the local web portal.",
+            fullNamePlaceholder: "Complete legal name",
+            companyPlaceholder: "Registered or trading name",
+            countryPlaceholder: "Official country name",
+            nationalityPlaceholder: "Declared nationality",
+            passportPlaceholder: "Passport number",
+            nationalIdPlaceholder: "National document",
+            notesPlaceholder: "Additional context for the compliance team",
+            defaultNotes: "",
             alerts: "Alerts",
             recentAlerts: "Recent Alerts",
             noAlerts: "No alerts for now.",
             screeningHistory: "History",
-            latestScreenings: "Latest Screenings",
+            latestScreenings: "Latest reviews",
+            historyIntro: "Review recent searches, compare risk, status and hits, and export reports when needed.",
+            historySearchPlaceholder: "Name, country, company or risk",
             client: "Client",
             risk: "Risk",
             status: "Status",
-            matches: "Matches",
+            matches: "Hits",
             recommendation: "Recommendation",
             noScreenings: "No screenings available.",
+            noHistoryResults: "No review matches the current filter.",
             adminTools: "Administration",
+            adminWorkspaceTitle: "Administration center",
+            adminWorkspaceIntro: "Manage access, sessions and external sources used in AML/KYC searches. Keep URLs and endpoints updated to improve decision quality.",
+            enabledSources: "Enabled sources",
+            companyProfile: "Company data",
+            companyProfileTitle: "Institutional record",
+            legalName: "Legal name",
+            tradingName: "Trading name",
+            taxId: "Tax ID",
+            registrationNumber: "Registration number",
+            companyEmail: "Institutional e-mail",
+            companyPhone: "Phone",
+            companyWebsite: "Website",
+            companyAddress: "Address",
+            companyCity: "City",
+            companyCountry: "Country",
+            complianceOfficer: "Compliance officer",
+            reportFooter: "Report footer text",
+            saveCompanyProfile: "Save company data",
             createUser: "Add user",
             users: "Users",
             activeSessions: "Active sessions",
@@ -1175,16 +2483,32 @@
             lastName: "Last name",
             role: "Role",
             phone: "Phone",
+            emailAccessNote: "Used for login, alerts and audit trail.",
+            temporaryPasswordNote: "Minimum of 8 characters; should be changed after the first access.",
             saveUser: "Save user",
+            recentUsers: "Recent users",
             noUsers: "No users to show.",
             addResearchLink: "Add external source",
+            sourceCode: "Code",
             sourceName: "Source name",
+            sourceNameNote: "Use a name the compliance team can recognize.",
             searchUrl: "Search URL",
+            searchUrlNote: "External search checks this link and also the technical endpoint when present.",
             endpointUrl: "Technical endpoint",
             sourceType: "Type",
             sourceFormat: "Format",
             saveResearchLink: "Save link",
+            registeredSources: "Registered sources",
             noResearchLinks: "No registered links.",
+            noUrl: "No URL",
+            noEndpoint: "No endpoint",
+            actions: "Actions",
+            edit: "Edit",
+            delete: "Delete",
+            saveChanges: "Save changes",
+            confirmDeleteLink: "Are you sure you want to delete this research link?",
+            enabled: "Enabled",
+            disabled: "Disabled",
             sources: "Sources",
             integrationsAndRules: "Integrations and Rules",
             syncLogs: "Sync Logs",
@@ -1203,7 +2527,46 @@
             screeningData: "Search data",
             screeningDataTitle: "Exportable summary",
             selectScreeningForReport: "Run or select a screening to generate search reports.",
-            noMatchesForSearch: "No matches were found for this search."
+            noMatchesForSearch: "No hits were found for this search.",
+            resultsObtained: "Results obtained",
+            sitesChecked: "Sites/sources checked",
+            sitesFound: "Sites with results",
+            foundSites: "Checked sites",
+            foundSitesTitle: "Sources checked in the search",
+            foundResultsTitle: "Found results",
+            source: "Source",
+            siteUrl: "Site / URL",
+            results: "Results",
+            score: "Score",
+            details: "Details",
+            matchedName: "Matched name",
+            remarks: "Remarks",
+            noSitesFound: "No site or source was checked for this search.",
+            previousPage: "Previous page",
+            nextPage: "Next page"
+            ,
+            risk_LOW: "Low",
+            risk_MEDIUM: "Medium",
+            risk_HIGH: "High",
+            risk_CRITICAL: "Critical",
+            status_PENDING: "Pending",
+            status_COMPLETED: "Completed",
+            status_REVIEW: "In review",
+            health_OK: "OK",
+            health_WARNING: "Warning",
+            health_ERROR: "Error",
+            sync_RUNNING: "Running",
+            sync_SUCCESS: "Success",
+            sync_FAILED: "Failed",
+            external_FOUND: "Found",
+            external_NO_MATCH: "No match",
+            condition_SOURCE_MATCH: "Source match",
+            condition_COUNTRY_MATCH: "Country match",
+            condition_SCORE_THRESHOLD: "Score threshold",
+            recommendation_LOW: "Proceed with standard due diligence.",
+            recommendation_MEDIUM: "Proceed with enhanced due diligence and documentary review.",
+            recommendation_HIGH: "Escalate to compliance officer before onboarding.",
+            recommendation_CRITICAL: "Do not onboard. Block and investigate immediately."
           }
         };
 
@@ -1236,6 +2599,11 @@
           const nextUrl = new URL(window.location.href);
           nextUrl.searchParams.set("lang", locale);
           window.history.replaceState({}, "", nextUrl);
+          document.querySelectorAll("[data-lang-option]").forEach(function (button) {
+            const hrefUrl = new URL(window.location.href);
+            hrefUrl.searchParams.set("lang", button.getAttribute("data-lang-option"));
+            button.setAttribute("href", hrefUrl.pathname + hrefUrl.search + hrefUrl.hash);
+          });
         }
 
         function applyLocale(locale, syncUrl) {
@@ -1256,6 +2624,11 @@
             if (dictionary[key]) element.setAttribute("aria-label", dictionary[key]);
           });
 
+          document.querySelectorAll("[data-i18n-placeholder]").forEach(function (element) {
+            const key = element.getAttribute("data-i18n-placeholder");
+            if (dictionary[key]) element.setAttribute("placeholder", dictionary[key]);
+          });
+
           document.querySelectorAll("[data-i18n-value]").forEach(function (element) {
             const key = element.getAttribute("data-i18n-value");
             if (dictionary[key] && !element.dataset.userEdited) element.value = dictionary[key];
@@ -1269,6 +2642,42 @@
 
           document.querySelectorAll("[data-locale-field]").forEach(function (field) {
             field.value = nextLocale;
+          });
+
+          document.querySelectorAll("[data-risk-value]").forEach(function (element) {
+            const key = "risk_" + element.getAttribute("data-risk-value");
+            if (dictionary[key]) element.textContent = dictionary[key];
+          });
+
+          document.querySelectorAll("[data-status-value]").forEach(function (element) {
+            const key = "status_" + element.getAttribute("data-status-value");
+            if (dictionary[key]) element.textContent = dictionary[key];
+          });
+
+          document.querySelectorAll("[data-health-value]").forEach(function (element) {
+            const key = "health_" + element.getAttribute("data-health-value");
+            if (dictionary[key]) element.textContent = dictionary[key];
+          });
+
+          document.querySelectorAll("[data-sync-status-value]").forEach(function (element) {
+            const key = "sync_" + element.getAttribute("data-sync-status-value");
+            if (dictionary[key]) element.textContent = dictionary[key];
+          });
+
+          document.querySelectorAll("[data-rule-condition-value]").forEach(function (element) {
+            const key = "condition_" + element.getAttribute("data-rule-condition-value");
+            if (dictionary[key]) element.textContent = dictionary[key];
+          });
+
+          document.querySelectorAll("[data-external-status-value]").forEach(function (element) {
+            const raw = element.getAttribute("data-external-status-value") || "";
+            const key = raw.indexOf("HTTP_") === 0 ? raw : "external_" + raw;
+            if (dictionary[key]) element.textContent = dictionary[key];
+          });
+
+          document.querySelectorAll("[data-recommendation-value]").forEach(function (element) {
+            const key = "recommendation_" + element.getAttribute("data-recommendation-value");
+            if (dictionary[key]) element.textContent = dictionary[key];
           });
 
           applySearchMode();
@@ -1293,14 +2702,195 @@
           });
         }
 
+        function normalizeViewTarget(value) {
+          const target = String(value || "").replace(/^#/, "") || "overview-view";
+          return document.querySelector("[data-view='" + target + "']") ? target : "overview-view";
+        }
+
+        function activatePortalView(value, syncHash) {
+          const target = normalizeViewTarget(value);
+          document.querySelectorAll("[data-view]").forEach(function (panel) {
+            panel.classList.toggle("is-active", panel.getAttribute("data-view") === target);
+          });
+
+          document.querySelectorAll("[data-view-target]").forEach(function (link) {
+            const isActive = normalizeViewTarget(link.getAttribute("data-view-target")) === target;
+            link.classList.toggle("is-active", isActive);
+            if (link.tagName === "A") {
+              if (isActive) link.setAttribute("aria-current", "page");
+              else link.removeAttribute("aria-current");
+            }
+          });
+
+          if (syncHash) {
+            const nextUrl = new URL(window.location.href);
+            nextUrl.hash = target;
+            window.history.replaceState({}, "", nextUrl);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        }
+
+        function initPagination() {
+          document.querySelectorAll("[data-paginated]").forEach(function (container) {
+            if (container.dataset.paginationReady === "true") return;
+            const items = Array.from(container.querySelectorAll("[data-page-row]")).filter(function (item) {
+              return item.closest("[data-paginated]") === container;
+            });
+            const pageSize = Math.max(1, parseInt(container.getAttribute("data-page-size") || "8", 10));
+            if (items.length <= pageSize) return;
+
+            let currentPage = 0;
+            const controls = document.createElement("div");
+            const previous = document.createElement("button");
+            const next = document.createElement("button");
+            const status = document.createElement("span");
+            const dictionary = translations[normalizeLocale(document.documentElement.lang) || "pt"];
+
+            controls.className = "pagination";
+            status.className = "pagination-status";
+            previous.type = "button";
+            next.type = "button";
+            previous.textContent = "‹";
+            next.textContent = "›";
+            previous.setAttribute("data-i18n-aria-label", "previousPage");
+            next.setAttribute("data-i18n-aria-label", "nextPage");
+            previous.setAttribute("aria-label", dictionary.previousPage);
+            next.setAttribute("aria-label", dictionary.nextPage);
+
+            function renderPage() {
+              const totalPages = Math.ceil(items.length / pageSize);
+              currentPage = Math.max(0, Math.min(currentPage, totalPages - 1));
+              const start = currentPage * pageSize;
+              const end = Math.min(start + pageSize, items.length);
+
+              items.forEach(function (item, index) {
+                item.hidden = index < start || index >= end;
+              });
+              status.textContent = String(start + 1) + "-" + String(end) + " / " + String(items.length);
+              previous.disabled = currentPage === 0;
+              next.disabled = currentPage >= totalPages - 1;
+            }
+
+            previous.addEventListener("click", function () {
+              currentPage -= 1;
+              renderPage();
+            });
+            next.addEventListener("click", function () {
+              currentPage += 1;
+              renderPage();
+            });
+
+            controls.appendChild(previous);
+            controls.appendChild(status);
+            controls.appendChild(next);
+            container.appendChild(controls);
+            container.dataset.paginationReady = "true";
+            renderPage();
+          });
+        }
+
+        function initProcessingState() {
+          document.querySelectorAll("[data-screening-form]").forEach(function (form) {
+            if (form.dataset.processingReady === "true") return;
+
+            form.addEventListener("submit", function (event) {
+              if (form.dataset.processing === "true") {
+                event.preventDefault();
+                return;
+              }
+              if (typeof form.checkValidity === "function" && !form.checkValidity()) return;
+
+              const locale = normalizeLocale(document.documentElement.lang) || "pt";
+              const dictionary = translations[locale];
+              const selected = form.querySelector("input[name='search_type']:checked");
+              const mode = selected ? selected.value : "person";
+              const typeLabel = String(dictionary[mode + "Mode"] || dictionary.searchType || "").toLowerCase();
+              const feedback = form.querySelector("[data-processing-feedback]");
+              const message = form.querySelector("[data-processing-message]");
+              const submitButton = form.querySelector("[data-screening-submit]");
+
+              if (message && dictionary.processingSearchDetail) {
+                message.textContent = dictionary.processingSearchDetail.replace("{type}", typeLabel);
+              }
+              if (feedback) feedback.classList.remove("is-hidden");
+              if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.classList.add("is-loading");
+                submitButton.textContent = dictionary.processingButton || dictionary.runScreening;
+              }
+              form.classList.add("is-processing");
+              form.setAttribute("aria-busy", "true");
+              form.dataset.processing = "true";
+            });
+
+            form.dataset.processingReady = "true";
+          });
+        }
+
+        function normalizeSearchText(value) {
+          return String(value || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+        }
+
+        function initHistorySearch() {
+          const input = document.querySelector("[data-history-search]");
+          if (!input || input.dataset.historyReady === "true") return;
+          const container = input.closest("[data-view]") || document;
+          const rows = Array.from(container.querySelectorAll("[data-history-row]"));
+          const emptyRow = container.querySelector(".history-empty-filter");
+
+          function applyFilter() {
+            const query = normalizeSearchText(input.value);
+            let visible = 0;
+            rows.forEach(function (row) {
+              const matches = !query || normalizeSearchText(row.textContent).includes(query);
+              row.hidden = !matches;
+              if (matches) visible += 1;
+            });
+            if (emptyRow) emptyRow.style.display = query && visible === 0 ? "table-row" : "none";
+          }
+
+          input.addEventListener("input", applyFilter);
+          input.dataset.historyReady = "true";
+          applyFilter();
+        }
+
+        function initDeleteConfirmations() {
+          document.querySelectorAll("[data-confirm-delete]").forEach(function (form) {
+            if (form.dataset.confirmReady === "true") return;
+            form.addEventListener("submit", function (event) {
+              const locale = normalizeLocale(document.documentElement.lang) || "pt";
+              const message = translations[locale].confirmDeleteLink || "Confirm delete?";
+              if (!window.confirm(message)) {
+                event.preventDefault();
+              }
+            });
+            form.dataset.confirmReady = "true";
+          });
+        }
+
         document.querySelectorAll("[data-i18n-value]").forEach(function (element) {
           element.addEventListener("input", function () {
             element.dataset.userEdited = "true";
           });
         });
 
+        document.querySelectorAll("[data-view-target]").forEach(function (link) {
+          link.addEventListener("click", function (event) {
+            event.preventDefault();
+            activatePortalView(link.getAttribute("data-view-target"), true);
+          });
+        });
+
+        window.addEventListener("hashchange", function () {
+          activatePortalView(window.location.hash, false);
+        });
+
         document.querySelectorAll("[data-lang-option]").forEach(function (button) {
-          button.addEventListener("click", function () {
+          button.addEventListener("click", function (event) {
+            event.preventDefault();
             applyLocale(button.getAttribute("data-lang-option"), true);
           });
         });
@@ -1311,6 +2901,11 @@
 
         const initialLocale = normalizeLocale(params.get("lang")) || normalizeLocale(readStoredLocale()) || normalizeLocale(serverLocale) || "pt";
         applyLocale(initialLocale, Boolean(params.get("lang")));
+        initPagination();
+        initProcessingState();
+        initHistorySearch();
+        initDeleteConfirmations();
+        activatePortalView(window.location.hash || (params.get("screening") ? "#new-screening" : "#overview-view"), false);
       })();
     </script>
   </body>

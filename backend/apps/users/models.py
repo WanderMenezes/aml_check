@@ -80,3 +80,33 @@ class UserSession(models.Model):
     @property
     def is_expired(self):
         return self.expires_at <= timezone.now()
+
+
+class CompanyProfile(models.Model):
+    legal_name = models.CharField(max_length=255, default="AML Check Enterprise")
+    trading_name = models.CharField(max_length=255, blank=True)
+    tax_id = models.CharField(max_length=80, blank=True)
+    registration_number = models.CharField(max_length=80, blank=True)
+    address = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=120, blank=True)
+    country = models.CharField(max_length=120, blank=True)
+    phone = models.CharField(max_length=80, blank=True)
+    email = models.EmailField(blank=True)
+    website = models.URLField(blank=True)
+    compliance_officer = models.CharField(max_length=160, blank=True)
+    report_footer = models.CharField(max_length=255, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Company profile"
+        verbose_name_plural = "Company profile"
+
+    def __str__(self):
+        return self.trading_name or self.legal_name
+
+    @classmethod
+    def current(cls):
+        profile = cls.objects.order_by("id").first()
+        if profile:
+            return profile
+        return cls.objects.create()

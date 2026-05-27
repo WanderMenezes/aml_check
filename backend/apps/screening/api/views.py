@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -19,14 +20,11 @@ from apps.screening.api.serializers import (
     ScreeningRunSerializer,
 )
 from apps.screening.models import Alert, Client, PDFReport, ScreeningRequest
+from apps.screening.repositories.watchlist_repository import WatchlistRepository
 from apps.screening.services.report_service import ReportService
 from apps.screening.services.screening_service import ScreeningService
 from apps.users.permissions import IsAnyRole, IsComplianceTeam
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from rest_framework.response import Response
-from apps.screening.repositories.watchlist_repository import WatchlistRepository
+from common.utils.i18n import normalize_language
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -66,7 +64,10 @@ class ScreeningRequestViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=["post"], permission_classes=[IsComplianceTeam])
     def export_pdf(self, request, pk=None):
         screening = self.get_object()
-        language = request.data.get("language", getattr(request.user, "preferred_language", "pt"))
+        language = normalize_language(
+            request.data.get("language") or request.query_params.get("language") or request.headers.get("Accept-Language"),
+            fallback=getattr(request.user, "preferred_language", "pt"),
+        )
         report = ReportService.build_pdf(screening, language=language, request=request)
         return Response(PDFReportSerializer(report).data)
 
@@ -179,9 +180,16 @@ class ExternalSearchView(APIView):
             groups.append({
                 "key": key,
                 "url": r.get("url"),
-                "source_code": r.get("source").code if r.get("source") else None,
+                "checked_url": r.get("checked_url"),
+                "source_code": r.get("source_code") or (r.get("source").code if r.get("source") else None),
+                "source_name": r.get("source_name") or (r.get("source").name if r.get("source") else None),
                 "title": r.get("title"),
                 "snippet": r.get("snippet"),
                 "score": r.get("score"),
+                "status": r.get("status"),
+                "decision": r.get("decision"),
+                "decision_reason": r.get("decision_reason"),
+                "evidence_level": r.get("evidence_level"),
+                "important_terms": r.get("important_terms") or [],
             })
         return Response({"query": query, "groups": groups})
